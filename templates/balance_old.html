@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{.Title}} - Balance</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="/static/js/config.js"></script>
+    <style>
+      body {
+        /* Light Mode */
+        background-color: #f8fafc; /* slate-50 */
+        min-height: 100vh;
+      }
+      .dark body {
+        /* Dark Mode */
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+      }
+
+      .glass-morphism {
+        /* Light Mode */
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.07);
+      }
+      .dark .glass-morphism {
+        /* Dark Mode */
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 25px 45px rgba(0, 0, 0, 0.1);
+      }
+
+      .card-hover {
+        transition: all 0.3s ease;
+      }
+      .card-hover:hover {
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      }
+      .dark .card-hover:hover {
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+      }
+
+      .gradient-text {
+        background: linear-gradient(135deg, #22c55e, #f59e0b);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .nav-item {
+        position: relative;
+        transition: all 0.3s ease;
+      }
+      .nav-item::after {
+        content: "";
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: linear-gradient(90deg, #22c55e, #f59e0b);
+        transition: width 0.3s ease;
+      }
+      .nav-item:hover::after {
+        width: 100%;
+      }
+
+      .btn-primary, .btn-secondary, .btn-binance {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .btn-primary {
+        background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+        box-shadow: 0 4px 6px -1px rgba(34, 197, 94, 0.3), 0 2px 4px -1px rgba(34, 197, 94, 0.2);
+      }
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px -5px rgba(34, 197, 94, 0.4);
+      }
+      .btn-secondary {
+        background: linear-gradient(135deg, #06b6d4 0%, #0e7490 100%);
+        box-shadow: 0 4px 6px -1px rgba(6, 182, 212, 0.3), 0 2px 4px -1px rgba(6, 182, 212, 0.2);
+      }
+      .btn-secondary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px -5px rgba(6, 182, 212, 0.4);
+      }
+      .btn-binance {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        box-shadow: 0 4px 6px -1px rgba(245, 158, 11, 0.3), 0 2px 4px -1px rgba(245, 158, 11, 0.2);
+      }
+      .btn-binance:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px -5px rgba(245, 158, 11, 0.4);
+      }
+
+      .table-row:hover {
+        background: rgba(34, 197, 94, 0.05) !important;
+      }
+      .dark .table-row:hover {
+        background: rgba(34, 197, 94, 0.1) !important;
+      }
+
+      .badge {
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.5rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.025em;
+      }
+      .badge-deposit {
+        background: rgba(34, 197, 94, 0.2);
+        color: #166534;
+      }
+      .dark .badge-deposit { color: #22c55e; }
+      .badge-withdraw {
+        background: rgba(239, 68, 68, 0.2);
+        color: #b91c1c;
+      }
+      .dark .badge-withdraw { color: #ef4444; }
+
+      .input-field {
+        background: #f8fafc; /* slate-50 */
+        border: 1px solid #e2e8f0; /* slate-200 */
+        color: #1e293b; /* slate-800 */
+        transition: all 0.3s ease;
+      }
+      .dark .input-field {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: white;
+      }
+      .input-field:focus {
+        border-color: #22c55e;
+        box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
+      }
+      .dark .input-field:focus { background: rgba(255, 255, 255, 0.15); }
+      .input-field::placeholder { color: #94a3b8; } /* slate-400 */
+      .dark .input-field::placeholder { color: rgba(255, 255, 255, 0.5); }
+      
+      .copy-field {
+        background: #f1f5f9; /* slate-100 */
+        border: 1px solid #e2e8f0; /* slate-200 */
+        transition: all 0.3s ease;
+      }
+      .dark .copy-field {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .copy-field:hover {
+        background: #e2e8f0; /* slate-200 */
+        border-color: #f59e0b;
+      }
+      .dark .copy-field:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      .deposit-tab {
+        background: rgba(0, 0, 0, 0.05);
+        color: #475569; /* slate-600 */
+        border: 1px solid rgba(0, 0, 0, 0.1);
+      }
+      .dark .deposit-tab {
+        background: rgba(255, 255, 255, 0.1);
+        color: rgba(255, 255, 255, 0.7);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+      .deposit-tab.active {
+        background: linear-gradient(135deg, #22c55e, #16a34a);
+        color: white;
+        border-color: #22c55e;
+      }
+      .deposit-tab.active.binance {
+        background: linear-gradient(135deg, #f59e0b, #d97706);
+        border-color: #f59e0b;
+      }
+
+      .qr-container { transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+      .binance-step {
+        transition: all 0.3s ease;
+        border-left: 3px solid transparent;
+      }
+      .binance-step:hover {
+        border-left-color: #f59e0b;
+        background: rgba(245, 158, 11, 0.1);
+      }
+
+      @media (max-width: 768px) {
+        .responsive-table {
+          display: block;
+          overflow-x: auto;
+          white-space: nowrap;
+        }
+      }
+    </style>
+  </head>
+  <body class="font-sans text-slate-800 dark:text-slate-200 flex flex-col min-h-screen">
+    <header class="sticky top-0 z-30 border-b border-slate-200 dark:border-white/10 bg-white/80 dark:bg-neutral-950/80 backdrop-blur supports-[backdrop-filter]:bg-white/60 supports-[backdrop-filter]:dark:bg-neutral-950/60">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3">
+          <div class="flex items-center gap-3">
+            <div class="flex items-center gap-2">
+              <div
+                class="h-9 w-9 rounded-xl bg-gradient-to-br from-primary-500 to-primary-700 shadow-soft grid place-items-center text-white font-bold"
+              >
+                Y
+              </div>
+              <div>
+                <h1 class="text-base sm:text-lg font-semibold leading-tight text-slate-900 dark:text-white">
+                  {{.Title}}
+                </h1>
+                <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
+                  Balance:
+                  <span
+                    class="font-medium text-primary-700 dark:text-primary-300"
+                    >${{ .Balance }}</span
+                  >
+                </p>
+              </div>
+            </div>
+            <nav class="ml-auto hidden md:flex items-center gap-1 text-slate-700 dark:text-slate-300">
+              <a href="/" class="px-3 py-2 rounded-lg hover:bg-primary-50 dark:hover:bg-neutral-800 nav-item">Home</a>
+              <a href="/api" class="px-3 py-2 rounded-lg hover:bg-primary-50 dark:hover:bg-neutral-800 nav-item">API</a>
+              <a href="/orders" class="px-3 py-2 rounded-lg hover:bg-primary-50 dark:hover:bg-neutral-800 nav-item">Orders</a>
+              <a href="/balance" class="px-3 py-2 rounded-lg nav-item text-primary-700 dark:text-primary-300 font-medium">Balance</a>
+              <a href="/logout" class="px-3 py-2 rounded-lg hover:bg-primary-50 dark:hover:bg-neutral-800 nav-item">Logout</a>
+              <button
+                onclick="toggleTheme()"
+                class="ml-1 inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-transparent hover:border-primary-200 dark:hover:border-neutral-700"
+                aria-label="Toggle dark mode"
+              >
+                <svg
+                  class="h-5 w-5"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                >
+                  <path d="M12 3a9 9 0 1 0 9 9 7 7 0 0 1-9-9Z" />
+                </svg>
+              </button>
+            </nav>
+            <button
+              onclick="toggleTheme()"
+              class="md:hidden ml-auto inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-transparent hover:border-primary-200 dark:hover:border-neutral-700"
+              aria-label="Toggle dark mode"
+            >
+              <svg
+                class="h-5 w-5"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+              >
+                <path d="M12 3a9 9 0 1 0 9 9 7 7 0 0 1-9-9Z" />
+              </svg>
+            </button>
+          </div>
+
+          <div class="mt-3 grid grid-cols-2 gap-2 md:hidden">
+            <a
+              href="/"
+              class="px-3 py-2 rounded-lg bg-white/60 dark:bg-neutral-900 hover:bg-primary-50 dark:hover:bg-neutral-800 border border-slate-200/60 dark:border-white/10"
+              >Home</a
+            >
+            <a
+              href="/api"
+              class="px-3 py-2 rounded-lg bg-white/60 dark:bg-neutral-900 hover:bg-primary-50 dark:hover:bg-neutral-800 border border-slate-200/60 dark:border-white/10"
+              >API</a
+            >
+            <a
+                    href="https://tools.yshshopmails.com"
+                    class="px-3 py-2 rounded-lg hover:bg-primary-50 dark:hover:bg-neutral-800 nav-item"
+                    target="_blank" rel="noopener noreferrer"
+            >Tools</a
+            >
+             <a
+              href="/orders"
+              class="px-3 py-2 rounded-lg bg-white/60 dark:bg-neutral-900 hover:bg-primary-50 dark:hover:bg-neutral-800 border border-slate-200/60 dark:border-white/10"
+              >Orders</a
+            >
+            <a
+              href="/balance"
+              class="px-3 py-2 rounded-lg bg-primary-50 dark:bg-neutral-800 text-primary-700 dark:text-primary-300 border border-slate-200/60 dark:border-white/10"
+              >Balance</a
+            >
+          </div>
+        </div>
+      </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow">
+      {{if .Error}}
+      <div class="glass-morphism border border-red-500/30 p-4 rounded-xl mb-6 animate__animated animate__fadeIn">
+        <div class="flex items-center">
+          <div class="flex-shrink-0">
+            <svg class="h-5 w-5 text-red-500 dark:text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+            </svg>
+          </div>
+          <div class="ml-3">
+            <p class="text-sm text-red-700 dark:text-red-300">{{.Error}}</p>
+          </div>
+        </div>
+      </div>
+      {{end}}
+
+      <div class="glass-morphism p-8 rounded-2xl mb-8 card-hover animate__animated animate__fadeIn">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center">
+          <div>
+            <h2 class="text-lg font-medium text-slate-600 dark:text-slate-300 mb-2">Current Balance</h2>
+            <p class="text-4xl font-bold gradient-text mb-2">${{.Balance}} USD</p>
+          </div>
+          <div class="mt-4 sm:mt-0">
+            <span class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium glass-morphism text-primary-600 dark:text-primary-300 shadow-sm">
+              {{.TotalTransactions}} transactions
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="glass-morphism p-8 rounded-2xl mb-8 card-hover animate__animated animate__fadeInUp">
+        <h2 class="text-2xl font-bold gradient-text mb-6">Deposit Methods</h2>
+        
+        <div class="flex flex-wrap gap-3 mb-8">
+          <button onclick="showDepositMethod('bakong')" id="bakong-tab" class="deposit-tab active px-6 py-3 rounded-lg font-medium transition">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline mr-2" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h3a1 1 0 011 1v3a1 1 0 01-1 1H4a1 1 0 01-1-1V4zm2 2V5h1v1H5zM3 13a1 1 0 011-1h3a1 1 0 011 1v3a1 1 0 01-1 1H4a1 1 0 01-1-1v-3zm2 2v-1h1v1H5zM13 3a1 1 0 00-1 1v3a1 1 0 001 1h3a1 1 0 001-1V4a1 1 0 00-1-1h-3zm1 2v1h1V5h-1z" clip-rule="evenodd" />
+            </svg>
+            Bakong QR
+          </button>
+          <button onclick="showDepositMethod('binance')" id="binance-tab" class="deposit-tab px-6 py-3 rounded-lg font-medium transition">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline mr-2" viewBox="0 0 20 20" fill="currentColor">
+              <path d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" />
+            </svg>
+            Binance Transfer
+          </button>
+        </div>
+
+        <div id="bakong-method" class="deposit-method">
+          <h3 class="text-xl font-semibold text-slate-800 dark:text-white mb-6 flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary-500 dark:text-primary-400 mr-3" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+            </svg>
+            Deposit via Bakong QR
+          </h3>
+
+          <div class="flex flex-col sm:flex-row gap-4 items-start sm:items-end mb-6">
+            <div class="flex-1 w-full">
+              <label for="input_amount" class="block text-sm font-medium text-slate-600 dark:text-slate-300 mb-2">Amount (USD)</label>
+              <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <span class="text-slate-500 dark:text-slate-400 sm:text-sm">$</span>
+                </div>
+                <input type="number"
+                       id="input_amount"
+                       name="amount"
+                       step="0.01"
+                       min="1"
+                       value="10"
+                       class="input-field pl-7 w-full p-3 rounded-lg"
+                       placeholder="10.00">
+              </div>
+            </div>
+
+            <button onclick="showQR()" class="btn-primary text-white px-6 py-3 rounded-lg font-medium w-full sm:w-auto">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline mr-2 -mt-1" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h3a1 1 0 011 1v3a1 1 0 01-1 1H4a1 1 0 01-1-1V4zm2 2V5h1v1H5zM3 13a1 1 0 011-1h3a1 1 0 011 1v3a1 1 0 01-1 1H4a1 1 0 01-1-1v-3zm2 2v-1h1v1H5zM13 3a1 1 0 00-1 1v3a1 1 0 001 1h3a1 1 0 001-1V4a1 1 0 00-1-1h-3zm1 2v1h1V5h-1z" clip-rule="evenodd" />
+              </svg>
+              Generate Bakong KHQR
+            </button>
+          </div>
+
+          <div id="qrCode" class="hidden mt-6 qr-container">
+            <div class="glass-morphism p-6 rounded-xl">
+              <div id="loading" class="flex flex-col items-center justify-center py-8">
+                <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500 dark:border-primary-400 mb-4"></div>
+                <span id="transaction_txt" class="text-slate-600 dark:text-slate-300 font-medium">Preparing your transaction...</span>
+                <p class="text-sm text-slate-500 dark:text-slate-400 mt-2">Please wait while we generate your secure payment QR code</p>
+              </div>
+
+              <div id="qrContent" class="hidden animate__animated animate__fadeIn">
+                <div class="text-center mb-6">
+                  <h4 class="text-lg font-medium text-slate-800 dark:text-white mb-2">Scan to Pay with Bakong</h4>
+                  <p class="text-slate-600 dark:text-slate-300 max-w-md mx-auto">Use any Cambodian mobile banking app to scan this QR code</p>
+                </div>
+
+                <div class="flex flex-col items-center">
+                  <div class="bg-white p-4 rounded-lg shadow-sm mb-4">
+                    <img id="bank_qr" src="https://via.placeholder.com/250" alt="Bakong KHQR Code" class="w-64 h-64 mx-auto">
+                  </div>
+
+                  <div class="flex flex-col sm:flex-row gap-3 w-full max-w-md">
+                    <button onclick="copyTransactionId()" class="btn-secondary text-white px-4 py-2 rounded-lg font-medium flex-1">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline mr-2" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" />
+                        <path d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z" />
+                      </svg>
+                      Copy Reference
+                    </button>
+
+                    <button onclick="checkPaymentManually()" class="glass-morphism border border-primary-500/50 text-primary-600 dark:text-primary-300 px-4 py-2 rounded-lg font-medium flex-1 hover:bg-primary-500/20 transition">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline mr-2" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd" />
+                      </svg>
+                      Check Status
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="binance-method" class="deposit-method hidden">
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="text-xl font-semibold text-slate-800 dark:text-white flex items-center">
+              <div class="w-10 h-10 bg-gradient-to-r from-yellow-400 to-yellow-600 rounded-lg flex items-center justify-center mr-3">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" viewBox="0 0 20 20" fill="currentColor">
+                  <path d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" />
+                </svg>
+              </div>
+              Deposit via Binance Transfer
+            </h3>
+            <div class="flex items-center px-3 py-1 glass-morphism rounded-full">
+              <div class="w-2 h-2 bg-yellow-500 rounded-full mr-2"></div>
+              <span class="text-sm font-medium text-yellow-600 dark:text-yellow-300">USDT Network</span>
+            </div>
+          </div>
+
+          <div class="glass-morphism p-6 rounded-xl mb-6">
+            <h4 class="font-semibold text-yellow-600 dark:text-yellow-300 mb-4 flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+              </svg>
+              How to Send USDT from Binance
+            </h4>
+            <div class="space-y-3">
+              <div class="binance-step flex items-start p-4 rounded-lg glass-morphism">
+                <div class="flex-shrink-0 w-8 h-8 bg-yellow-500 text-white rounded-full flex items-center justify-center text-sm font-bold mr-3 mt-0.5">1</div>
+                <div>
+                  <p class="font-medium text-slate-800 dark:text-white">Log in to Binance</p>
+                  <p class="text-sm text-slate-600 dark:text-slate-300 mt-1">Access your Binance account via web or mobile app</p>
+                </div>
+              </div>
+              <div class="binance-step flex items-start p-4 rounded-lg glass-morphism">
+                <div class="flex-shrink-0 w-8 h-8 bg-yellow-500 text-white rounded-full flex items-center justify-center text-sm font-bold mr-3 mt-0.5">2</div>
+                <div>
+                  <p class="font-medium text-slate-800 dark:text-white">Navigate to Funding Wallet</p>
+                  <p class="text-sm text-slate-600 dark:text-slate-300 mt-1">Go to <span class="font-medium text-yellow-500 dark:text-yellow-300">Wallet → Funding → Withdraw</span></p>
+                </div>
+              </div>
+              <div class="binance-step flex items-start p-4 rounded-lg glass-morphism">
+                <div class="flex-shrink-0 w-8 h-8 bg-yellow-500 text-white rounded-full flex items-center justify-center text-sm font-bold mr-3 mt-0.5">3</div>
+                <div>
+                  <p class="font-medium text-slate-800 dark:text-white">Select USDT and Transfer Method</p>
+                  <p class="text-sm text-slate-600 dark:text-slate-300 mt-1">Choose <span class="font-medium text-yellow-500 dark:text-yellow-300">USDT</span> then <span class="font-medium text-yellow-500 dark:text-yellow-300">Send via Email/Phone Number/ID</span></p>
+                </div>
+              </div>
+              <div class="binance-step flex items-start p-4 rounded-lg glass-morphism">
+                <div class="flex-shrink-0 w-8 h-8 bg-yellow-500 text-white rounded-full flex items-center justify-center text-sm font-bold mr-3 mt-0.5">4</div>
+                <div>
+                  <p class="font-medium text-slate-800 dark:text-white">Enter Transfer Details</p>
+                  <p class="text-sm text-slate-600 dark:text-slate-300 mt-1">Use the Binance ID and reference note provided below</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid md:grid-cols-2 gap-6 mb-6">
+            <div class="space-y-4">
+              <div>
+                <label class="block text-sm font-medium text-slate-600 dark:text-slate-300 mb-2">Binance ID</label>
+                <div class="copy-field p-4 rounded-lg flex items-center justify-between cursor-pointer" onclick="copyToClipboard('binance-id', 'Binance ID copied!')">
+                  <div class="flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-500 dark:text-yellow-400 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                      <path fill-rule="evenodd" d="M18 8a6 6 0 01-7.743 5.743L10 14l-1 1-1 1H6v2H2v-4l4.257-4.257A6 6 0 1118 8zm-6-4a1 1 0 100 2 2 2 0 012 2 1 1 0 102 0 4 4 0 00-4-4z" clip-rule="evenodd" />
+                    </svg>
+                    <span id="binance-id" class="font-mono text-slate-800 dark:text-white">1122194030</span>
+                  </div>
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400 hover:text-yellow-400 transition" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" />
+                    <path d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z" />
+                  </svg>
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-slate-600 dark:text-slate-300 mb-2">Reference Note</label>
+                <div class="copy-field p-4 rounded-lg flex items-center justify-between cursor-pointer" onclick="copyToClipboard('reference-note', 'Reference note copied!')">
+                  <div class="flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-500 dark:text-yellow-400 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                      <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd" />
+                    </svg>
+                    <span id="reference-note" class="font-mono text-slate-800 dark:text-white">ysh{{.UserId}}</span>
+                  </div>
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400 hover:text-yellow-400 transition" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" />
+                    <path d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-center">
+              <div class="text-center">
+                <div class="rounded-2xl flex items-center justify-center mx-auto">
+                  <img src="/static/binance1.jpg" alt="Binance QR Code" class="w-40 h-40 rounded-lg">
+                </div>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-2">Scan with Binance app</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="glass-morphism border border-amber-400/30 rounded-xl p-6 mb-6">
+            <div class="flex items-start">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-amber-500 dark:text-amber-400 mr-3 mt-0.5 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+              </svg>
+              <div>
+                <h5 class="font-medium text-amber-600 dark:text-amber-300 mb-2">Important Notes</h5>
+                <ul class="text-sm text-slate-600 dark:text-slate-300 space-y-1">
+                  <li>• Always include the reference note for proper credit</li>
+                  <li>• Transfers typically process within 5-15 minutes</li>
+                  <li>• Contact support if transfer doesn't appear within 30 minutes</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <button onclick="openBinanceApp()" class="btn-binance text-white px-6 py-3 rounded-lg font-medium w-full flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M12.586 4.586a2 2 0 112.828 2.828l-3 3a2 2 0 01-2.828 0 1 1 0 00-1.414 1.414 4 4 0 005.656 0l3-3a4 4 0 00-5.656-5.656l-1.5 1.5a1 1 0 101.414 1.414l1.5-1.5zm-5 5a2 2 0 012.828 0 1 1 0 101.414-1.414 4 4 0 00-5.656 0l-3 3a4 4 0 105.656 5.656l1.5-1.5a1 1 0 10-1.414-1.414l-1.5 1.5a2 2 0 11-2.828-2.828l3-3z" clip-rule="evenodd" />
+            </svg>
+            Open Binance App
+          </button>
+        </div>
+      </div>
+
+      <div class="glass-morphism p-8 rounded-2xl mb-8 card-hover animate__animated animate__fadeInUp">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
+          <h2 class="text-2xl font-bold gradient-text flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary-500 dark:text-primary-400 mr-3" viewBox="0 0 20 20" fill="currentColor">
+              <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z" />
+              <path fill-rule="evenodd" d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z" clip-rule="evenodd" />
+            </svg>
+            Transaction History
+          </h2>
+
+          <div class="flex gap-3 mt-4 sm:mt-0">
+            <a href="/balance?page=1&type=deposit" class="px-4 py-2 text-sm rounded-lg glass-morphism text-primary-600 dark:text-primary-300 font-medium border border-primary-500/50">Deposits</a>
+            <a href="/balance" class="px-4 py-2 text-sm rounded-lg glass-morphism text-slate-600 dark:text-slate-300 font-medium border border-slate-400/30">All</a>
+          </div>
+        </div>
+
+        <div class="responsive-table glass-morphism rounded-xl overflow-hidden">
+          <table class="w-full">
+            <thead>
+              <tr class="border-b border-slate-200 dark:border-white/10">
+                <th class="p-4 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">ID</th>
+                <th class="p-4 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Amount</th>
+                <th class="p-4 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Type</th>
+                <th class="p-4 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Note</th>
+                <th class="p-4 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Time</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-200 dark:divide-white/10">
+              {{range .Transactions}}
+              <tr class="table-row transition">
+                <td class="p-4 text-sm font-medium text-slate-800 dark:text-white">{{.ID}}</td>
+                <td class="p-4 text-sm font-medium text-slate-800 dark:text-white">{{.AmountUSD}} USD</td>
+                <td class="p-4">
+                  <span class="badge badge-{{if gt .Amount 0}}deposit{{else}}withdraw{{end}}">
+                    {{if gt .Amount 0}}
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline mr-1 -mt-1" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
+                      </svg>
+                    {{else}}
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline mr-1 -mt-1" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M5 10a1 1 0 011-1h8a1 1 0 110 2H6a1 1 0 01-1-1z" clip-rule="evenodd" />
+                      </svg>
+                    {{end}}
+                    {{.Type}}
+                  </span>
+                </td>
+                <td class="p-4 text-sm text-slate-600 dark:text-slate-300">{{.Note}}</td>
+                <td class="p-4 text-sm text-slate-600 dark:text-slate-300">
+                  <div class="flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-400 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                      <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd" />
+                    </svg>
+                    {{.CreatedAt.Format "Jan 2, 2006 15:04"}}
+                  </div>
+                </td>
+              </tr>
+              {{else}}
+              <tr>
+                <td colspan="5" class="p-12 text-center">
+                  <div class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mb-4 text-slate-400 dark:text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <p class="text-lg font-medium text-slate-700 dark:text-slate-300">No transactions found</p>
+                    <p class="text-sm mt-2">Your transaction history will appear here</p>
+                  </div>
+                </td>
+              </tr>
+              {{end}}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
+        <div class="order-2 sm:order-1">
+          <span class="text-sm text-slate-500 dark:text-slate-400">Page {{.Page}} of {{.TotalPages}}</span>
+        </div>
+        <div class="flex gap-3 order-1 sm:order-2">
+          {{if gt .Page 1}}
+          <a href="/balance?page={{.PrevPage}}&type={{.TypeFilter}}" class="btn-primary text-white py-2 px-6 rounded-lg text-sm font-medium flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+            </svg>
+            Previous
+          </a>
+          {{else}}
+          <button disabled class="glass-morphism text-slate-400 dark:text-slate-500 py-2 px-6 rounded-lg text-sm font-medium cursor-not-allowed flex items-center border border-slate-300 dark:border-slate-600">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+            </svg>
+            Previous
+          </button>
+          {{end}}
+
+          {{if lt .Page .TotalPages}}
+          <a href="/balance?page={{.NextPage}}&type={{.TypeFilter}}" class="btn-primary text-white py-2 px-6 rounded-lg text-sm font-medium flex items-center">
+            Next
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+            </svg>
+          </a>
+          {{else}}
+          <button disabled class="glass-morphism text-slate-400 dark:text-slate-500 py-2 px-6 rounded-lg text-sm font-medium cursor-not-allowed flex items-center border border-slate-300 dark:border-slate-600">
+            Next
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+            </svg>
+          </button>
+          {{end}}
+        </div>
+      </div>
+    </main>
+
+    <footer class="glass-morphism border-t border-slate-200 dark:border-white/10 mt-16">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div class="text-center text-slate-500 dark:text-slate-400">
+          <p>© 2025 {{.Title}}. All rights reserved.</p>
+          <p class="mt-1 text-sm">Secure balance management and transaction tracking</p>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      function makeid(length) {
+        var result = '';
+        var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        var charactersLength = characters.length;
+        for (var i = 0; i < length; i++) {
+          result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+        return result;
+      }
+
+      let currentId = '';
+
+      // Tab switching functionality
+      function showDepositMethod(method) {
+        document.querySelectorAll('.deposit-method').forEach(el => el.classList.add('hidden'));
+        document.querySelectorAll('.deposit-tab').forEach(tab => {
+          tab.classList.remove('active', 'binance');
+        });
+        document.getElementById(method + '-method').classList.remove('hidden');
+        const activeTab = document.getElementById(method + '-tab');
+        activeTab.classList.add('active');
+        if (method === 'binance') {
+          activeTab.classList.add('binance');
+        }
+      }
+
+      document.addEventListener('DOMContentLoaded', () => showDepositMethod('bakong'));
+
+      function showQR() {
+        const amount = document.getElementById('input_amount').value;
+        if (!amount || amount < 1) {
+          showNotification('error', 'Invalid Amount', 'Please enter a valid amount (minimum $1)');
+          return;
+        }
+
+        const qrCodeDiv = document.getElementById('qrCode');
+        const loadingDiv = document.getElementById('loading');
+        const qrContentDiv = document.getElementById('qrContent');
+
+        qrCodeDiv.classList.remove('hidden');
+        loadingDiv.classList.remove('hidden');
+        qrContentDiv.classList.add('hidden');
+        qrCodeDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+        currentId = makeid(14);
+        document.getElementById('bank_qr').src = '/bakong/bank_qr?amount=' + amount + "&id=" + currentId;
+        document.getElementById('transaction_txt').textContent = 'Generating transaction ' + currentId + '...';
+
+        setTimeout(() => {
+          loadingDiv.classList.add('hidden');
+          qrContentDiv.classList.remove('hidden');
+          document.getElementById('transaction_txt').textContent = 'Transaction ' + currentId + ' is ready for payment';
+        }, 100);
+      }
+
+      async function checkPaymentManually() {
+        if (!currentId) {
+          showNotification('error', 'No Transaction', 'No active transaction to check');
+          return;
+        }
+        await check_payment();
+      }
+
+      async function check_payment() {
+        if (currentId === '') return;
+
+        try {
+          const response = await fetch('/payments?id=' + currentId);
+          if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+          const data = await response.json();
+
+          if (data['isPaid']) {
+            const c = currentId;
+            currentId = '';
+            showNotification('success', 'Payment Received!', `Transaction ${c} completed successfully. Your balance will be updated.`);
+            setTimeout(() => location.reload(), 3000);
+          }
+        } catch (error) {
+          console.error('Error calling API:', error);
+          // showNotification('error', 'Payment check failed', 'Unable to verify payment status. Please try again.');
+        }
+      }
+
+      function copyTransactionId() {
+        if (!currentId) {
+          showNotification('error', 'No Reference', 'No transaction reference available');
+          return;
+        }
+        copyToClipboard(currentId, 'Transaction reference copied to clipboard', true);
+      }
+
+      function copyToClipboard(elementIdOrText, message, isText = false) {
+        const text = isText ? elementIdOrText : document.getElementById(elementIdOrText).textContent;
+        navigator.clipboard.writeText(text).then(() => {
+          showNotification('success', 'Copied!', message);
+        }).catch(err => {
+          console.error('Failed to copy: ', err);
+          showNotification('error', 'Copy failed', 'Could not copy to clipboard');
+        });
+      }
+      
+      function openBinanceApp() {
+        const binanceAppUrl = 'binance://';
+        const binanceWebUrl = 'https://www.binance.com/';
+        window.location.href = binanceAppUrl;
+        setTimeout(() => window.open(binanceWebUrl, '_blank'), 1000);
+      }
+
+      function showNotification(type, title, message) {
+        const notificationContainer = document.getElementById('notification-container') || createNotificationContainer();
+        
+        const colors = {
+          success: 'border-green-500 bg-white dark:bg-slate-800',
+          error: 'border-red-500 bg-white dark:bg-slate-800',
+          info: 'border-blue-500 bg-white dark:bg-slate-800'
+        };
+        const iconColors = {
+          success: 'text-green-500',
+          error: 'text-red-500',
+          info: 'text-blue-500'
+        };
+        const textColors = {
+          success: 'text-green-800 dark:text-green-300',
+          error: 'text-red-800 dark:text-red-300',
+          info: 'text-blue-800 dark:text-blue-300'
+        };
+        const icons = {
+          success: 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z',
+          error: 'M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z',
+          info: 'M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z'
+        };
+
+        const notification = document.createElement('div');
+        notification.className = `p-4 rounded-lg shadow-lg border-l-4 w-full max-w-sm animate__animated animate__fadeInRight ${colors[type]}`;
+        notification.innerHTML = `
+          <div class="flex items-start">
+            <svg class="h-6 w-6 ${iconColors[type]} mr-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${icons[type]}" />
+            </svg>
+            <div>
+              <h4 class="font-medium ${textColors[type]}">${title}</h4>
+              <p class="text-sm text-slate-600 dark:text-slate-300">${message}</p>
+            </div>
+          </div>`;
+        
+        notificationContainer.appendChild(notification);
+        
+        setTimeout(() => {
+          notification.classList.remove('animate__fadeInRight');
+          notification.classList.add('animate__fadeOutRight');
+          setTimeout(() => notification.remove(), 500);
+        }, 3000);
+      }
+      
+      function createNotificationContainer() {
+        let container = document.createElement('div');
+        container.id = 'notification-container';
+        container.className = 'fixed top-4 right-4 z-50 space-y-3';
+        document.body.appendChild(container);
+        return container;
+      }
+
+
+      setInterval(check_payment, 5000);
+    </script>
+  </body>
+</html>

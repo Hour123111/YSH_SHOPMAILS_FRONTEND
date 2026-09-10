@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{.Title}}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      body {
+        background: linear-gradient(135deg, #e6fffa 0%, #a3e4d7 100%);
+        font-family: "Inter", sans-serif;
+        margin: 0;
+        padding: 2rem;
+      }
+      .container {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 1rem;
+        padding: 2rem;
+        backdrop-filter: blur(5px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+      .btn-primary {
+        background: linear-gradient(to right, #2f855a, #38a169);
+        transition: background-color 0.3s ease, transform 0.2s ease;
+      }
+      .btn-primary:hover {
+        background: linear-gradient(to right, #276749, #2f855a);
+        transform: translateY(-2px);
+      }
+      .btn-danger {
+        background: linear-gradient(to right, #c53030, #e53e3e);
+        transition: background-color 0.3s ease, transform 0.2s ease;
+      }
+      .btn-danger:hover {
+        background: linear-gradient(to right, #9b2c2c, #c53030);
+        transform: translateY(-2px);
+      }
+      .section-title {
+        border-bottom: 2px solid #38a169;
+        padding-bottom: 0.5rem;
+        color: #1a4731;
+        font-size: 1.25rem;
+        font-weight: 600;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      th,
+      td {
+        text-align: left;
+        padding: 0.75rem;
+        border-bottom: 1px solid rgba(47, 133, 90, 0.2);
+        vertical-align: middle;
+      }
+      th {
+        color: #1a4731;
+        font-weight: 600;
+        white-space: nowrap;
+      }
+      td {
+        color: #276749;
+        word-break: break-all;
+      }
+      @media (max-width: 640px) {
+        body {
+          padding: 1rem;
+        }
+        .container {
+          padding: 1.5rem;
+        }
+        h1 {
+          font-size: 1.5rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container max-w-6xl mx-auto">
+      <h1 class="text-2xl font-bold text-center text-green-900 mb-6">
+        {{.Title}}
+      </h1>
+      {{if .Error}}
+      <div class="bg-red-50 text-red-600 p-4 rounded-lg mb-4">{{.Error}}</div>
+      {{end}}
+      <h2 class="text-xl font-semibold text-green-800 mb-4 section-title">
+        AllSourceInventory
+      </h2>
+      <div class="overflow-x-auto">
+        <table>
+          <thead>
+            <tr>
+              <th>Enable</th>
+              <th>Source</th>
+              <th>ExService</th>
+              <th>MaxInventory</th>
+              <th>MaxInventoryCheck</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {{range .AllSourceInventory}}
+            <tr>
+              <td>
+                {{if .Enable}}
+                <span class="text-green-700 font-semibold">true</span>
+                {{else}}
+                <span class="text-red-600 font-semibold">false</span>
+                {{end}}
+              </td>
+              <td>{{.Source}}</td>
+              <td>{{.ExService}}</td>
+              <td>{{.MaxInventory}}</td>
+              <td>{{.MaxInventoryCheck}}</td>
+              <td>
+                <form method="POST" action="/admin2g5/inventory">
+                  <input type="hidden" name="source" value="{{.Source}}" />
+                  <input
+                    type="hidden"
+                    name="enable"
+                    value="{{if .Enable}}false{{else}}true{{end}}"
+                  />
+                  {{if .Enable}}
+                  <button
+                    name="action"
+                    value="toggle_source_enable"
+                    class="btn-danger text-white py-1 px-3 rounded-lg font-medium whitespace-nowrap"
+                  >
+                    Disable
+                  </button>
+                  {{else}}
+                  <button
+                    name="action"
+                    value="toggle_source_enable"
+                    class="btn-primary text-white py-1 px-3 rounded-lg font-medium whitespace-nowrap"
+                  >
+                    Enable
+                  </button>
+                  {{end}}
+                </form>
+              </td>
+            </tr>
+            {{else}}
+            <tr>
+              <td colspan="6" class="text-center text-green-700 py-6">
+                No sources in memory
+              </td>
+            </tr>
+            {{end}}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </body>
+</html>

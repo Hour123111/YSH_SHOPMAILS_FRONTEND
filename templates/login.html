@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{.Title}} - Login | YSHSHOPMAILS</title>
+    <meta
+      name="description"
+      content="Log in to your YSHSHOPMAILS account to buy verified OTP mailboxes, read codes instantly and manage your orders."
+    />
+    <meta name="robots" content="noindex, follow" />
+    <meta name="theme-color" content="#0f766e" />
+    <link rel="canonical" href="https://yshshopmails.com/login" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="/static/js/config.js"></script>
+    <link rel="icon" href="/static/img/yshshopmails-logo.png" type="image/png" />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/static/css/app.css" />
+    <script defer src="/static/js/ui.js"></script>
+  </head>
+  <body class="app-body auth-page font-sans">
+    <div class="auth-shell">
+      <div class="panel auth-card rise-in">
+        <div class="text-center mb-8">
+          <div class="brand-mark mx-auto mb-4" style="width: 3.25rem; height: 3.25rem">
+            <img src="/static/img/yshshopmails-logo.png" alt="YSHSHOPMAILS" />
+          </div>
+          <p class="text-xs font-semibold tracking-[0.18em] uppercase text-teal-700 dark:text-teal-300 mb-2">
+            YSHSHOPMAILS
+          </p>
+          <h1 class="font-display text-2xl sm:text-3xl font-bold gradient-text mb-2">{{.Title}}</h1>
+          <p class="text-slate-600 dark:text-slate-300 text-sm sm:text-base">
+            Welcome back! Sign in to continue
+          </p>
+        </div>
+
+        {{if .Error}}
+        <div
+          class="bg-red-50 dark:bg-red-500/15 border border-red-200 dark:border-red-500/30 text-red-700 dark:text-red-200 p-4 rounded-xl mb-6 text-sm"
+        >
+          <div class="flex items-start gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 flex-shrink-0 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+            </svg>
+            <div>{{.Error}}</div>
+          </div>
+        </div>
+        {{end}}
+
+        <form method="POST" class="space-y-5">
+          <div>
+            <label for="email" class="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-2">
+              Email Address
+            </label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              autocomplete="email"
+              required
+              class="input-field"
+              placeholder="your@email.com"
+            />
+          </div>
+
+          <div>
+            <label for="password" class="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-2">
+              Password
+            </label>
+            <input
+              id="password"
+              name="password"
+              type="password"
+              autocomplete="current-password"
+              required
+              class="input-field"
+              placeholder="••••••••"
+            />
+          </div>
+
+          <div class="flex items-center justify-between gap-3">
+            <label class="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300 cursor-pointer">
+              <input
+                id="remember-me"
+                name="remember-me"
+                type="checkbox"
+                class="h-4 w-4 rounded border-slate-300 text-teal-700 focus:ring-teal-600"
+              />
+              Remember me
+            </label>
+            <a href="/forgot" class="text-sm font-medium text-teal-700 dark:text-teal-300 hover:underline">
+              Forgot password?
+            </a>
+          </div>
+
+          <button type="submit" class="btn-primary w-full py-3 px-4 text-white">
+            Sign In
+          </button>
+        </form>
+
+        <div class="mt-8 text-center text-sm text-slate-500 dark:text-slate-400">
+          Don't have an account?
+          <a href="/signup" class="font-medium text-teal-700 dark:text-teal-300 hover:underline">Sign up</a>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

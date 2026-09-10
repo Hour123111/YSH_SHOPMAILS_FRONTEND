@@ -1,0 +1,1708 @@
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <title>{{.Title}} - Orders | YSHSHOPMAILS</title>
+    <meta
+      name="description"
+      content="View your YSHSHOPMAILS orders, buy verified OTP mailboxes and read verification codes instantly."
+    />
+    <meta name="robots" content="noindex, follow" />
+    <meta name="theme-color" content="#0f766e" />
+    <link rel="canonical" href="https://yshshopmails.com/order" />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="/static/js/config.js"></script>
+    <link
+      rel="icon"
+      href="/static/img/yshshopmails-logo.png"
+      type="image/png"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/static/css/app.css" />
+    <script defer src="/static/js/ui.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <script>
+      function copy(el) {
+        let txt = el.textContent.trim();
+        if (!txt) return;
+        navigator.clipboard.writeText(txt);
+        txt = txt.split("|")[0];
+        showToast("Copied: " + txt);
+      }
+
+      function showToast(msg) {
+        const toast = document.getElementById("toast");
+        toast.textContent = msg;
+        toast.classList.remove(
+          "opacity-0",
+          "translate-y-4",
+          "pointer-events-none",
+        );
+        toast.classList.add("opacity-100", "translate-y-0");
+        clearTimeout(window.__toastTimer);
+        window.__toastTimer = setTimeout(() => {
+          toast.classList.add(
+            "opacity-0",
+            "translate-y-4",
+            "pointer-events-none",
+          );
+          toast.classList.remove("opacity-100", "translate-y-0");
+        }, 2600);
+      }
+
+      async function GetOtp(id) {
+        const btn = document.getElementById("check-btn-" + id);
+        const original = btn.innerHTML;
+        btn.innerHTML = `<svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Checking...`;
+        btn.disabled = true;
+
+        try {
+          const response = await fetch(
+            "/v1/api/check-otp.php?id=" + id + "&source=web",
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                api_key: "{{ .Token }}",
+              },
+            },
+          );
+
+          if (!response.ok) {
+            const error = await response.text();
+            showToast(error || "System error, please try again later");
+            return;
+          }
+
+          const data = await response.json();
+
+          if (data["status"] === "fail") {
+            showToast(data["error"]);
+            return;
+          }
+
+          const oldOtp = document
+            .getElementById("otp-" + id)
+            .textContent.trim();
+
+          document.getElementById("amount-" + id).textContent =
+            data["amount"] + " USD";
+          document.getElementById("otp-" + id).textContent = data["otp"];
+          document.getElementById("time-" + id).textContent = data["time"];
+
+          if (oldOtp !== data["otp"]) {
+            showToast("New OTP: " + data["otp"]);
+          }
+        } catch (error) {
+          showToast("Network error, please try again");
+        } finally {
+          btn.innerHTML = original;
+          btn.disabled = false;
+        }
+      }
+
+      // Fetches the latest OTP for Outlook/Hotmail orders via the public
+      // shopmailmmo tools API. `mail` is the full "email|password|refresh_token|client_id" string.
+      async function GetOutlookOtp(id, mail) {
+        const btn = document.getElementById("check-btn-" + id);
+        const original = btn.innerHTML;
+        btn.innerHTML = `<svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Checking...`;
+        btn.disabled = true;
+
+        try {
+          const url =
+            "https://api-tools.yshshopmails.com/api/v1/public/outlook/latest_otp?data=" +
+            encodeURIComponent(mail) +
+            "&max_age_minutes=5";
+
+          const response = await fetch(url, { method: "GET" });
+          const data = await response.json();
+
+          if (!data || data.success !== true) {
+            showToast((data && data.error) || "OTP not found");
+            return;
+          }
+
+          const info = data.data || {};
+          const code = info.code || "";
+          const oldOtp = document
+            .getElementById("otp-" + id)
+            .textContent.trim();
+
+          document.getElementById("otp-" + id).textContent = code;
+
+          if (info.received) {
+            const d = new Date(info.received * 1000);
+            document.getElementById("time-" + id).textContent =
+              d.toLocaleString();
+          }
+
+          if (code && oldOtp !== code) {
+            showToast("New OTP: " + code);
+          } else if (code) {
+            showToast("OTP: " + code);
+          } else {
+            showToast("OTP not found yet, try again");
+          }
+        } catch (error) {
+          showToast("Network error, please try again");
+        } finally {
+          btn.innerHTML = original;
+          btn.disabled = false;
+        }
+      }
+
+      async function GetMail(service) {
+        const btn = document.getElementById("new-mail-btn-" + service);
+        const original = btn.innerHTML;
+        btn.innerHTML = `<svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Creating...`;
+        btn.disabled = true;
+
+        try {
+          const response = await fetch(
+            "/v1/api/create-order.php?service=" + service,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                api_key: "{{ .Token }}",
+              },
+            },
+          );
+
+          if (response.status >= 500) {
+            const data = await response.json();
+            showToast(data["error"]);
+            return;
+          }
+
+          if (!response.ok) {
+            const error = await response.text();
+            showToast(error || "System error, please try again later");
+            return;
+          }
+
+          const data = await response.json();
+          if (data["status"] === "fail") {
+            showToast(data["error"]);
+            return;
+          }
+
+          // Reload to reflect new order
+          location.reload();
+        } catch (error) {
+          showToast("Network error, please try again");
+        } finally {
+          btn.innerHTML = original;
+          btn.disabled = false;
+        }
+      }
+
+      function downloadTrustTxt(mailData, service, orderId) {
+        const lines = String(mailData)
+          .split("\n")
+          .map((l) => l.trim())
+          .filter(Boolean);
+        if (!lines.length) return;
+        const blob = new Blob([lines.join("\n") + "\n"], {
+          type: "text/plain;charset=utf-8",
+        });
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = service + "_" + orderId + ".txt";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+      }
+
+      async function downloadOrderExport(orderId) {
+        try {
+          const res = await fetch(
+            "/v2/api/order/export?order_id=" + encodeURIComponent(orderId),
+          );
+          if (!res.ok) {
+            showToast("Download failed");
+            return;
+          }
+          const text = await res.text();
+          const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+          const a = document.createElement("a");
+          a.href = URL.createObjectURL(blob);
+          a.download = "order_" + orderId + ".txt";
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          URL.revokeObjectURL(a.href);
+          showToast("Downloaded");
+        } catch (error) {
+          showToast("Download failed");
+        }
+      }
+
+      function trustTypeLabel(type) {
+        if (type === "hotmailtrust") return "HotmailTrust";
+        if (type === "outlooktrust") return "OutlookTrust";
+        return type;
+      }
+
+      function swapCheckForDownload(checkBtn, orderId) {
+        if (!checkBtn) return;
+        checkBtn.outerHTML =
+          '<button type="button" class="' +
+          checkBtn.className +
+          '" onclick="downloadOrderExport(\'' +
+          orderId +
+          '\')"><i class="fas fa-download"></i> Download</button>';
+      }
+
+      function initOrderMailCells() {
+        document.querySelectorAll(".mail-raw").forEach((raw) => {
+          const mail = raw.textContent.trim();
+          const lines = mail.split("\n").filter((l) => l.trim());
+          const type = raw.dataset.type || "";
+          const orderId = raw.dataset.orderId || "";
+          const container = raw.closest("td, .order-field");
+          const display = container?.querySelector(".mail-display");
+          const isBulk = lines.length > 1;
+
+          if (isBulk && display) {
+            if (type === "hotmailtrust" || type === "outlooktrust") {
+              display.textContent = lines.length + " " + trustTypeLabel(type);
+            } else {
+              display.textContent = lines.length + " " + type;
+            }
+            display.classList.remove("copy-cell");
+            display.removeAttribute("onclick");
+
+            const row = raw.closest("tr") || raw.closest(".order-mcard");
+            swapCheckForDownload(
+              row?.querySelector('[id^="check-btn-"]'),
+              orderId,
+            );
+          } else if (display && lines.length === 1) {
+            display.textContent = lines[0];
+          }
+        });
+      }
+
+      function GetOutlookOtpForOrder(id, btn) {
+        const row = btn.closest("tr") || btn.closest(".order-mcard");
+        const raw = row?.querySelector(".mail-raw");
+        const mail = raw?.textContent.trim() || "";
+        if (!mail || mail.includes("\n")) {
+          showToast("Use Download TXT for bulk orders");
+          return;
+        }
+        GetOutlookOtp(id, mail);
+      }
+
+      // ===== Buy amount modal (Hotmail/Outlook Trust) =====
+      const BUY_INFO = {
+        hotmailtrust: {
+          name: "Hotmail Trust",
+          desc: "Trusted Hotmail (Live 6-12 months)",
+          price: 0.012,
+          logo: "#logo-hotmail",
+          stockId: "stock-hotmailtrust",
+        },
+        outlooktrust: {
+          name: "Outlook Trust",
+          desc: "Trusted Outlook (Live 6-12 months)",
+          price: 0.012,
+          logo: "#logo-outlook",
+          stockId: "stock-outlooktrust",
+        },
+      };
+      let currentBuyService = null;
+
+      function openBuyModal(service) {
+        const info = BUY_INFO[service];
+        if (!info) return GetMail(service);
+        currentBuyService = service;
+
+        document
+          .getElementById("buy-logo-use")
+          .setAttribute("href", info.logo);
+        document.getElementById("buy-title").textContent = info.name;
+        document.getElementById("buy-desc").textContent = info.desc;
+        const unitStr = "$" + info.price.toFixed(3);
+        document.getElementById("buy-unit").textContent = unitStr;
+        document.getElementById("buy-unit-2").textContent = unitStr;
+
+        const stockEl = document.getElementById(info.stockId);
+        const stock = stockEl
+          ? parseInt(stockEl.textContent.replace(/[^0-9]/g, ""), 10) || 0
+          : 0;
+        document.getElementById("buy-stock").textContent = stock;
+
+        const qtyInput = document.getElementById("buy-qty");
+        qtyInput.value = 1;
+        qtyInput.max = stock > 0 ? stock : "";
+        updateBuyTotal();
+
+        const modal = document.getElementById("buy-modal");
+        modal.classList.remove("hidden");
+        requestAnimationFrame(() => modal.classList.add("open"));
+        document.body.style.overflow = "hidden";
+      }
+
+      function closeBuyModal() {
+        const modal = document.getElementById("buy-modal");
+        modal.classList.remove("open");
+        setTimeout(() => {
+          modal.classList.add("hidden");
+          document.body.style.overflow = "";
+        }, 200);
+        currentBuyService = null;
+      }
+
+      function blockQtyDecimal(e) {
+        if ([".", ",", "e", "E", "+", "-"].includes(e.key)) {
+          e.preventDefault();
+        }
+      }
+
+      function sanitizeQtyInput() {
+        const qtyInput = document.getElementById("buy-qty");
+        const raw = String(qtyInput.value).split(/[.,]/)[0].replace(/[^\d]/g, "");
+        let qty = parseInt(raw, 10);
+        if (!raw || isNaN(qty) || qty < 1) {
+          qtyInput.value = 1;
+        } else {
+          const max = parseInt(qtyInput.max, 10);
+          if (max && qty > max) qty = max;
+          qtyInput.value = qty;
+        }
+        updateBuyTotal();
+      }
+
+      function buyQtyStep(delta) {
+        const qtyInput = document.getElementById("buy-qty");
+        let v = (parseInt(qtyInput.value, 10) || 0) + delta;
+        if (v < 1) v = 1;
+        const max = parseInt(qtyInput.max, 10);
+        if (max && v > max) v = max;
+        qtyInput.value = v;
+        updateBuyTotal();
+      }
+
+      function setBuyQty(v) {
+        const qtyInput = document.getElementById("buy-qty");
+        const max = parseInt(qtyInput.max, 10);
+        if (max && v > max) v = max;
+        qtyInput.value = v;
+        updateBuyTotal();
+      }
+
+      function updateBuyTotal() {
+        const info = BUY_INFO[currentBuyService];
+        if (!info) return;
+        const qtyInput = document.getElementById("buy-qty");
+        let qty = parseInt(String(qtyInput.value).split(/[.,]/)[0], 10) || 0;
+        if (qty < 1) qty = 1;
+        const max = parseInt(qtyInput.max, 10);
+        if (max && qty > max) qty = max;
+        qtyInput.value = qty;
+        document.getElementById("buy-total").textContent =
+          "$" + (qty * info.price).toFixed(3);
+        document.getElementById("buy-qty-label").textContent = qty;
+      }
+
+      async function confirmBuy() {
+        const service = currentBuyService;
+        const info = BUY_INFO[service];
+        if (!info) return;
+        const qty =
+          parseInt(
+            String(document.getElementById("buy-qty").value).split(/[.,]/)[0],
+            10,
+          ) || 1;
+        const apiKey = "{{ .Token }}";
+
+        const btn = document.getElementById("buy-confirm");
+        const original = btn.innerHTML;
+        btn.innerHTML = `<svg class="animate-spin -ml-1 mr-1 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Processing...`;
+        btn.disabled = true;
+
+        try {
+          const preRes = await fetch(
+            "/v2/api/pre-order.php?key=" + encodeURIComponent(apiKey),
+          );
+          if (!preRes.ok) {
+            showToast("Pre-order failed, please try again");
+            return;
+          }
+
+          const preData = await preRes.json();
+          if (preData.status !== "success" || !preData.id) {
+            showToast(preData.error || "Pre-order failed");
+            return;
+          }
+
+          let orderUrl =
+            "/v2/api/order.php?id=" +
+            encodeURIComponent(preData.id) +
+            "&key=" +
+            encodeURIComponent(apiKey) +
+            "&service=" +
+            encodeURIComponent(service) +
+            "&fetch=true";
+          if (qty > 1) orderUrl += "&qty=" + qty;
+
+          const orderRes = await fetch(orderUrl);
+          if (!orderRes.ok) {
+            const errText = await orderRes.text();
+            showToast(errText || "Order failed, please try again");
+            return;
+          }
+
+          const orderData = await orderRes.json();
+          if (orderData.status !== "success") {
+            showToast(orderData.error || "Order failed");
+            return;
+          }
+
+          if (orderData.mail) {
+            downloadTrustTxt(
+              orderData.mail,
+              service,
+              orderData.order_id || preData.id,
+            );
+          }
+
+          closeBuyModal();
+          showToast("Purchased " + qty + " account(s) — TXT downloaded");
+          setTimeout(() => location.reload(), 900);
+        } catch (error) {
+          showToast("Network error, please try again");
+        } finally {
+          btn.innerHTML = original;
+          btn.disabled = false;
+        }
+      }
+
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape") {
+          const modal = document.getElementById("buy-modal");
+          if (modal && !modal.classList.contains("hidden")) closeBuyModal();
+        }
+      });
+
+      // Function to update stock display (example with random numbers)
+      function updateStockDisplay() {
+        // In a real application, you would fetch this data from your API
+        const stockData = {
+          facebook: Math.floor(Math.random() * 100) + 50,
+          // 'hotmailtrust': Math.floor(Math.random() * 80) + 30,
+          // 'outlooktrust': Math.floor(Math.random() * 120) + 40,
+          // 'novery_kh': Math.floor(Math.random() * 60) + 20
+        };
+
+        Object.keys(stockData).forEach((service) => {
+          const stockElement = document.getElementById(`stock-${service}`);
+          if (stockElement) {
+            fetch("https://facebook.yshshopmails.com/v1/api/stock")
+              .then((response) => {
+                if (!response.ok) {
+                  throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+              })
+              .then((data) => {
+                const stock = data.stock; // Lấy số (ví dụ: ID = 1)
+
+                // Add visual indicator based on stock level
+                if (stock < 20) {
+                  stockElement.classList.add("text-red-500", "font-bold");
+                  stockElement.classList.remove(
+                    "text-green-500",
+                    "text-yellow-500",
+                  );
+                } else if (stock < 50) {
+                  stockElement.classList.add(
+                    "text-yellow-500",
+                    "font-semibold",
+                  );
+                  stockElement.classList.remove(
+                    "text-green-500",
+                    "text-red-500",
+                  );
+                } else {
+                  stockElement.classList.add("text-green-500", "font-semibold");
+                  stockElement.classList.remove(
+                    "text-yellow-500",
+                    "text-red-500",
+                  );
+                }
+
+                stockElement.textContent = stock;
+                return stock;
+              })
+              .catch((error) => {
+                console.error("load stock error :", error);
+              });
+          }
+        });
+      }
+
+      // Initialize stock display when page loads
+      document.addEventListener("DOMContentLoaded", function () {
+        updateStockDisplay();
+        initOrderMailCells();
+      });
+    </script>
+    <style>
+      /* ===== Modern mail / novery logos ===== */
+      .itile.logo {
+        background: transparent !important;
+        box-shadow: none;
+        padding: 0;
+      }
+      .itile.logo svg.mlogo {
+        width: 100%;
+        height: 100%;
+        display: block;
+        border-radius: inherit;
+        filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.28));
+      }
+      .tlogo {
+        width: 1.15rem;
+        height: 1.15rem;
+        vertical-align: -0.22rem;
+        border-radius: 0.35rem;
+        flex-shrink: 0;
+      }
+
+      /* ===== Buy amount overlay modal ===== */
+      .buy-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 120;
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        background: rgba(8, 15, 25, 0.55);
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
+        opacity: 0;
+        transition: opacity 0.22s ease;
+      }
+      @media (min-width: 640px) {
+        .buy-overlay {
+          align-items: center;
+          padding: 1.5rem;
+        }
+      }
+      .buy-overlay.hidden {
+        display: none;
+      }
+      .buy-overlay.open {
+        opacity: 1;
+      }
+      .buy-card {
+        position: relative;
+        width: 100%;
+        max-width: 27rem;
+        background: linear-gradient(180deg, var(--panel), var(--panel-2));
+        border: 1px solid var(--line);
+        border-radius: 1.4rem 1.4rem 0 0;
+        box-shadow: 0 -20px 60px -20px rgba(0, 0, 0, 0.5);
+        overflow: hidden;
+        transform: translateY(28px);
+        transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      @media (min-width: 640px) {
+        .buy-card {
+          border-radius: 1.4rem;
+          transform: translateY(16px) scale(0.98);
+        }
+      }
+      .buy-overlay.open .buy-card {
+        transform: none;
+      }
+      .buy-card::before {
+        content: "";
+        position: absolute;
+        inset: 0 0 auto 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--brand), var(--accent-hot));
+      }
+      .buy-grip {
+        width: 2.4rem;
+        height: 0.28rem;
+        border-radius: 999px;
+        background: var(--line);
+        margin: 0.6rem auto 0;
+      }
+      @media (min-width: 640px) {
+        .buy-grip {
+          display: none;
+        }
+      }
+      .buy-head {
+        display: flex;
+        align-items: center;
+        gap: 0.85rem;
+        padding: 1rem 1.25rem 0.5rem;
+      }
+      .buy-head .itile {
+        width: 3rem;
+        height: 3rem;
+        border-radius: 0.9rem;
+      }
+      .buy-head h3 {
+        font-family: "Space Grotesk", "Manrope", sans-serif;
+        font-weight: 800;
+        font-size: 1.05rem;
+        margin: 0;
+        color: var(--ink);
+        line-height: 1.15;
+      }
+      .buy-head p {
+        margin: 0.12rem 0 0;
+        font-size: 0.75rem;
+        color: var(--muted);
+      }
+      .buy-close {
+        margin-left: auto;
+        border: none;
+        background: var(--panel-2);
+        color: var(--muted);
+        width: 2rem;
+        height: 2rem;
+        border-radius: 999px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        line-height: 1;
+        flex-shrink: 0;
+        display: grid;
+        place-items: center;
+        transition: background 0.15s ease, color 0.15s ease;
+      }
+      .buy-close:hover {
+        background: rgba(239, 68, 68, 0.15);
+        color: #ef4444;
+      }
+      .buy-body {
+        padding: 0.5rem 1.25rem 1.25rem;
+      }
+      .buy-priceline {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 0.8rem;
+        color: var(--muted);
+        margin-bottom: 0.85rem;
+      }
+      .buy-priceline b {
+        color: var(--ink);
+      }
+      .buy-qtylabel {
+        font-size: 0.7rem;
+        font-weight: 800;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 0.4rem;
+      }
+      .buy-stepper {
+        display: flex;
+        align-items: stretch;
+        gap: 0.5rem;
+      }
+      .buy-stepper button {
+        width: 3rem;
+        border: 1px solid var(--line);
+        background: var(--panel-2);
+        color: var(--ink);
+        font-size: 1.35rem;
+        font-weight: 700;
+        border-radius: 0.8rem;
+        cursor: pointer;
+        transition: transform 0.12s ease, border-color 0.12s ease;
+      }
+      .buy-stepper button:hover {
+        border-color: var(--brand);
+        transform: translateY(-1px);
+      }
+      .buy-stepper input {
+        flex: 1;
+        min-width: 0;
+        text-align: center;
+        border: 1px solid var(--line);
+        background: var(--panel);
+        color: var(--ink);
+        border-radius: 0.8rem;
+        font-family: "Space Grotesk", "Manrope", sans-serif;
+        font-weight: 800;
+        font-size: 1.3rem;
+        -moz-appearance: textfield;
+        appearance: textfield;
+      }
+      .buy-stepper input::-webkit-outer-spin-button,
+      .buy-stepper input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+      .buy-chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+        margin-top: 0.75rem;
+      }
+      .buy-chip {
+        border: 1px solid var(--line);
+        background: var(--panel-2);
+        color: var(--ink);
+        border-radius: 999px;
+        padding: 0.3rem 0.85rem;
+        font-size: 0.78rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.12s ease;
+      }
+      .buy-chip:hover {
+        border-color: var(--brand);
+        color: var(--brand);
+      }
+      .buy-totalbox {
+        margin-top: 1rem;
+        padding: 0.9rem 1.1rem;
+        border-radius: 1rem;
+        background: radial-gradient(
+            120% 140% at 0% 0%,
+            rgba(11, 110, 99, 0.14),
+            transparent 60%
+          ),
+          linear-gradient(
+            135deg,
+            rgba(255, 106, 26, 0.08),
+            rgba(11, 110, 99, 0.08)
+          );
+        border: 1px solid var(--line);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .buy-totalbox .t-lbl {
+        font-size: 0.72rem;
+        font-weight: 800;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .buy-totalbox .t-sub {
+        font-size: 0.68rem;
+        color: var(--muted);
+        margin-top: 0.15rem;
+      }
+      .buy-totalbox .t-val {
+        font-family: "Space Grotesk", "Manrope", sans-serif;
+        font-weight: 800;
+        font-size: 1.7rem;
+        line-height: 1;
+        background: linear-gradient(135deg, var(--brand), var(--accent-hot));
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      .buy-actions {
+        display: flex;
+        gap: 0.6rem;
+        margin-top: 1.1rem;
+      }
+      .buy-cancel {
+        flex: 1;
+        border: 1px solid var(--line);
+        background: var(--panel-2);
+        color: var(--ink);
+        font-weight: 800;
+        border-radius: 0.85rem;
+        padding: 0.75rem;
+        cursor: pointer;
+        font-size: 0.85rem;
+        transition: all 0.12s ease;
+      }
+      .buy-cancel:hover {
+        border-color: var(--muted);
+      }
+      .buy-confirm {
+        flex: 2;
+        border: none;
+        cursor: pointer;
+        color: #111;
+        font-weight: 800;
+        border-radius: 0.85rem;
+        padding: 0.75rem;
+        font-size: 0.9rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.4rem;
+        background: linear-gradient(135deg, #ff8a3c, var(--accent-hot));
+        box-shadow: 0 14px 26px -14px rgba(255, 106, 26, 0.85);
+        transition: transform 0.12s ease, filter 0.12s ease;
+      }
+      .buy-confirm:hover {
+        transform: translateY(-1px);
+        filter: brightness(1.05);
+      }
+      .buy-confirm:disabled {
+        opacity: 0.7;
+        cursor: default;
+      }
+    </style>
+  </head>
+
+  <body
+    class="app-body flex flex-col min-h-screen font-sans text-slate-800 dark:text-slate-200"
+  >
+    <!-- Brand logo sprite (modern mail / novery marks) -->
+    <svg
+      width="0"
+      height="0"
+      style="position: absolute"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <defs>
+        <linearGradient id="g-fb" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#3b8bff" />
+          <stop offset="1" stop-color="#0a58d6" />
+        </linearGradient>
+        <linearGradient id="g-hm" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#2ec5ff" />
+          <stop offset="1" stop-color="#0a74d6" />
+        </linearGradient>
+        <linearGradient id="g-ol" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#1f6bff" />
+          <stop offset="1" stop-color="#052a80" />
+        </linearGradient>
+        <linearGradient id="g-nv" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#b671ff" />
+          <stop offset="1" stop-color="#ec4899" />
+        </linearGradient>
+      </defs>
+
+      <symbol id="logo-facebook" viewBox="0 0 48 48">
+        <rect width="48" height="48" rx="13" fill="url(#g-fb)" />
+        <path
+          d="M27.5 40V26.5h4.3l.7-5.2h-5V18c0-1.5.5-2.6 2.7-2.6H33V10.8c-.5-.07-2.1-.2-3.9-.2-3.9 0-6.6 2.4-6.6 6.7v3.9h-4.3v5.2h4.3V40h5z"
+          fill="#fff"
+        />
+      </symbol>
+
+      <symbol id="logo-hotmail" viewBox="0 0 48 48">
+        <rect width="48" height="48" rx="13" fill="url(#g-hm)" />
+        <rect x="11" y="16" width="26" height="17" rx="2.5" fill="#fff" />
+        <path
+          d="M12.5 18.5 24 26l11.5-7.5"
+          fill="none"
+          stroke="#0a74d6"
+          stroke-width="2.4"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </symbol>
+
+      <symbol id="logo-outlook" viewBox="0 0 48 48">
+        <rect width="48" height="48" rx="13" fill="url(#g-ol)" />
+        <rect x="22" y="17" width="15" height="14" rx="2" fill="#fff" />
+        <path
+          d="M22.8 18.6 29.5 23l6.7-4.4"
+          fill="none"
+          stroke="#1f6bff"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <ellipse cx="18" cy="24" rx="8.5" ry="9.5" fill="#0a3bb0" />
+        <ellipse cx="18" cy="24" rx="4.4" ry="5.2" fill="#fff" />
+      </symbol>
+
+      <symbol id="logo-novery" viewBox="0 0 48 48">
+        <rect width="48" height="48" rx="13" fill="url(#g-nv)" />
+        <path
+          d="M24 11l10 3.4v7.2c0 6.6-4.3 10.6-10 12.4-5.7-1.8-10-5.8-10-12.4v-7.2L24 11z"
+          fill="#fff"
+        />
+        <circle cx="24" cy="21.5" r="3.2" fill="url(#g-nv)" />
+        <path
+          d="M18.2 30c.5-3.1 2.9-4.8 5.8-4.8s5.3 1.7 5.8 4.8"
+          fill="none"
+          stroke="url(#g-nv)"
+          stroke-width="2.1"
+          stroke-linecap="round"
+        />
+      </symbol>
+    </svg>
+    <header class="app-header">
+      <div class="max-w-6xl mx-auto section-pad py-3 flex items-center gap-3">
+        <a href="/" class="flex items-center gap-2.5 min-w-0">
+          <div class="brand-mark">
+            <img src="/static/img/yshshopmails-logo.png" alt="YSHSHOPMAILS" />
+          </div>
+          <div class="min-w-0">
+            <div
+              class="font-display font-bold text-[0.95rem] sm:text-base leading-tight truncate"
+            >
+              YSHSHOPMAILS
+            </div>
+            <div class="text-[0.72rem] sm:text-xs text-[var(--muted)]">
+              Balance <b class="text-[var(--brand)]">${{ .Balance }}</b>
+            </div>
+          </div>
+        </a>
+        <nav class="ml-auto hidden md:flex items-center gap-1">
+          <a href="/" class="nav-link">Home</a>
+          <a href="/api" class="nav-link">API</a>
+          <a
+            href="https://tools.yshshopmails.com"
+            class="nav-link"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Tools</a
+          >
+          <a href="/orders" class="nav-link active">Orders</a>
+          <a href="/balance" class="nav-link">Balance</a>
+          <a href="/logout" class="nav-link">Logout</a>
+          <button
+            onclick="toggleTheme()"
+            class="nav-link"
+            aria-label="Toggle theme"
+          >
+            ◐
+          </button>
+        </nav>
+        <button
+          onclick="toggleTheme()"
+          class="md:hidden ml-auto nav-link"
+          aria-label="Toggle theme"
+        >
+          ◐
+        </button>
+      </div>
+    </header>
+
+    <main class="flex-grow w-full max-w-6xl mx-auto section-pad py-4 sm:py-6">
+      <!-- Services -->
+      <section class="rise-in rise-in-delay-1 mb-6">
+        <div class="flex items-center gap-2 mb-3 px-0.5">
+          <span class="eyebrow-pill"
+            ><span class="dot"></span> Service availability</span
+          >
+        </div>
+        <div class="svc-grid">
+          <!-- Facebook Gmail OTP -->
+          <div class="svc-card">
+            <div class="svc-head">
+              <span class="itile logo"
+                ><svg class="mlogo" viewBox="0 0 48 48">
+                  <use href="#logo-facebook"></use></svg
+              ></span>
+              <div>
+                <h3>FB Gmail OTP</h3>
+                <p>Gmail accounts for Facebook</p>
+              </div>
+            </div>
+            <div class="svc-foot">
+              <div class="svc-stock">
+                <div class="lbl">Available</div>
+                <div class="val">
+                  <span class="n" id="stock-facebook">~~</span>
+                </div>
+              </div>
+              <button
+                id="new-mail-btn-facebook"
+                onclick="GetMail('facebook')"
+                class="svc-new"
+              >
+                <i class="fas fa-plus"></i> New
+              </button>
+            </div>
+          </div>
+
+          <!-- Hotmail Trust -->
+          <div class="svc-card">
+            <div class="svc-head">
+              <span class="itile logo"
+                ><svg class="mlogo" viewBox="0 0 48 48">
+                  <use href="#logo-hotmail"></use></svg
+              ></span>
+              <div>
+                <h3>Hotmail Trust</h3>
+                <p>Trusted Hotmail (Live 6-12 months)</p>
+              </div>
+            </div>
+            <div class="svc-foot">
+              <div class="svc-stock">
+                <div class="lbl">Available</div>
+                <div class="val">
+                  <span class="n" id="stock-hotmailtrust"
+                    >{{ .Data.hotmailtrust_stock }}</span
+                  >
+                </div>
+              </div>
+              <button
+                id="new-mail-btn-hotmailtrust"
+                onclick="openBuyModal('hotmailtrust')"
+                class="svc-new"
+              >
+                <i class="fas fa-plus"></i> New
+              </button>
+            </div>
+          </div>
+
+          <!-- Outlook Trust -->
+          <div class="svc-card">
+            <div class="svc-head">
+              <span class="itile logo"
+                ><svg class="mlogo" viewBox="0 0 48 48">
+                  <use href="#logo-outlook"></use></svg
+              ></span>
+              <div>
+                <h3>Outlook Trust</h3>
+                <p>Trusted Outlook (Live 6-12 months)</p>
+              </div>
+            </div>
+            <div class="svc-foot">
+              <div class="svc-stock">
+                <div class="lbl">Available</div>
+                <div class="val">
+                  <span class="n" id="stock-outlooktrust"
+                    >{{ .Data.outlooktrust_stock }}</span
+                  >
+                </div>
+              </div>
+              <button
+                id="new-mail-btn-outlooktrust"
+                onclick="openBuyModal('outlooktrust')"
+                class="svc-new"
+              >
+                <i class="fas fa-plus"></i> New
+              </button>
+            </div>
+          </div>
+
+          <!-- Novery KH -->
+          <div class="svc-card">
+            <div class="svc-head">
+              <span class="itile logo"
+                ><svg class="mlogo" viewBox="0 0 48 48">
+                  <use href="#logo-novery"></use></svg
+              ></span>
+              <div>
+                <h3>FB Novery KH</h3>
+                <p>Facebook accounts with profile backup</p>
+              </div>
+            </div>
+            <div class="svc-foot">
+              <div class="svc-stock">
+                <div class="lbl">Available</div>
+                <div class="val">
+                  <span class="n" id="stock-novery"
+                    >{{ .Data.novery_kh_stock }}</span
+                  >
+                </div>
+              </div>
+              <button
+                id="new-mail-btn-novery_kh"
+                onclick="GetMail('novery_kh')"
+                class="svc-new"
+              >
+                <i class="fas fa-plus"></i> New
+              </button>
+            </div>
+          </div>
+
+          <!-- Novery US -->
+          <div class="svc-card">
+            <div class="svc-head">
+              <span class="itile logo"
+                ><svg class="mlogo" viewBox="0 0 48 48">
+                  <use href="#logo-novery"></use></svg
+              ></span>
+              <div>
+                <h3>FB Novery US</h3>
+                <p>Facebook accounts with profile backup</p>
+              </div>
+            </div>
+            <div class="svc-foot">
+              <div class="svc-stock">
+                <div class="lbl">Available</div>
+                <div class="val">
+                  <span class="n" id="stock-novery-us"
+                    >{{ .Data.novery_us_stock }}</span
+                  >
+                </div>
+              </div>
+              <button
+                id="new-mail-btn-novery_us"
+                onclick="GetMail('novery_us')"
+                class="svc-new"
+              >
+                <i class="fas fa-plus"></i> New
+              </button>
+            </div>
+          </div>
+
+          <!-- Hotmail New -->
+          <div class="svc-card">
+            <div class="svc-head">
+              <span class="itile logo"
+                ><svg class="mlogo" viewBox="0 0 48 48">
+                  <use href="#logo-hotmail"></use></svg
+              ></span>
+              <div>
+                <h3>Hotmail New</h3>
+                <p>New Hotmail accounts (Live 1-3 hours)</p>
+              </div>
+            </div>
+            <div class="svc-foot">
+              <div class="svc-stock">
+                <div class="lbl">Available</div>
+                <div class="val">
+                  <span class="n" id="stock-hotmailnew"
+                    >{{ .Data.hotmailnew_stock }}</span
+                  >
+                </div>
+              </div>
+              <button
+                id="new-mail-btn-hotmailnew"
+                onclick="GetMail('hotmailnew')"
+                class="svc-new"
+              >
+                <i class="fas fa-plus"></i> New
+              </button>
+            </div>
+          </div>
+
+          <!-- Outlook New -->
+          <div class="svc-card">
+            <div class="svc-head">
+              <span class="itile logo"
+                ><svg class="mlogo" viewBox="0 0 48 48">
+                  <use href="#logo-outlook"></use></svg
+              ></span>
+              <div>
+                <h3>Outlook New</h3>
+                <p>New Outlook accounts (Live 1-3 hours)</p>
+              </div>
+            </div>
+            <div class="svc-foot">
+              <div class="svc-stock">
+                <div class="lbl">Available</div>
+                <div class="val">
+                  <span class="n" id="stock-outlooknew"
+                    >{{ .Data.outlooknew_stock }}</span
+                  >
+                </div>
+              </div>
+              <button
+                id="new-mail-btn-outlooknew"
+                onclick="GetMail('outlooknew')"
+                class="svc-new"
+              >
+                <i class="fas fa-plus"></i> New
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {{if .Error}}
+      <div
+        class="mt-4 panel border border-red-200 dark:border-red-900 text-red-700 dark:text-red-300 p-4 rounded-xl flex items-start gap-3 rise-in"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5 mt-0.5 flex-shrink-0"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+            clip-rule="evenodd"
+          />
+        </svg>
+        <div class="text-sm">{{.Error}}</div>
+      </div>
+      {{end}}
+
+      <div class="mt-6 panel orders-panel p-4 sm:p-6 rise-in rise-in-delay-2">
+        <div class="flex items-center justify-between mb-5">
+          <div class="flex items-center gap-2">
+            <span class="eyebrow-pill"
+              ><span class="dot"></span>Order History</span
+            >
+          </div>
+          <span class="stat-pill"
+            ><i class="fas fa-inbox text-[var(--brand)]"></i>
+            {{.TotalTransactions}} total</span
+          >
+        </div>
+
+        <div class="hidden lg:block">
+          <div class="overflow-x-auto">
+            <table class="orders-table w-full" style="table-layout: fixed">
+              <thead>
+                <tr class="border-b border-slate-200 dark:border-white/10">
+                  <th class="order-th">Status</th>
+                  <th class="order-th">Mail</th>
+                  <th class="order-th">Service</th>
+                  <th class="order-th">Amount (USD)</th>
+                  <th class="order-th">OTP</th>
+                  <th class="order-th">Created At</th>
+                  <th class="order-th">Action</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200 dark:divide-white/10">
+                {{range .Orders}}
+                <tr>
+                  <td class="order-td">
+                    {{if eq .Status "success"}}
+                    <span class="status-pill ok"
+                      ><i class="fas fa-check-circle"></i> {{.Status}}</span
+                    >
+                    {{else if eq .Status "running"}}
+                    <span class="status-pill run"
+                      ><i class="fas fa-clock"></i> {{.Status}}</span
+                    >
+                    {{else}}
+                    <span class="status-pill bad"
+                      ><i class="fas fa-times-circle"></i> {{.Status}}</span
+                    >
+                    {{end}}
+                  </td>
+                  <td class="order-td">
+                    <span
+                      class="mail-display line-clamp-1 copy-cell"
+                      onclick="copy(this)"
+                      >{{.Mail}}</span
+                    >
+                    <span
+                      class="mail-raw hidden"
+                      data-type="{{.Type}}"
+                      data-order-id="{{.ID}}"
+                      >{{.Mail}}</span
+                    >
+                  </td>
+                  <td class="order-td">
+                    <span class="inline-flex items-center gap-1.5">
+                      {{if eq .Type "facebook"}}
+                      <svg class="tlogo"><use href="#logo-facebook"></use></svg>
+                      {{else if eq .Type "hotmailtrust"}}
+                      <svg class="tlogo"><use href="#logo-hotmail"></use></svg>
+                      {{else if eq .Type "hotmailnew"}}
+                      <svg class="tlogo"><use href="#logo-hotmail"></use></svg>
+                      {{else if eq .Type "outlooktrust"}}
+                      <svg class="tlogo"><use href="#logo-outlook"></use></svg>
+                      {{else if eq .Type "outlooknew"}}
+                      <svg class="tlogo"><use href="#logo-outlook"></use></svg>
+                      {{else if eq .Type "novery_kh"}}
+                      <svg class="tlogo"><use href="#logo-novery"></use></svg>
+                      {{else if eq .Type "novery_us"}}
+                      <svg class="tlogo"><use href="#logo-novery"></use></svg>
+                      {{end}} {{.Type}}
+                    </span>
+                  </td>
+                  <td class="order-td">
+                    <span id="amount-{{ .ID }}"
+                      >{{.AmountUSD}} / {{ .OtpCounter }}</span
+                    >
+                  </td>
+                  <td
+                    class="order-td copy-cell font-bold text-[var(--accent-hot)]"
+                    id="otp-{{ .ID }}"
+                    onclick="copy(this)"
+                  >
+                    {{.LastOtp}}
+                  </td>
+                  <td class="order-td text-[var(--muted)]" id="time-{{ .ID }}">
+                    {{.CreatedAt.Format "2006-01-02 15:04:05"}}
+                  </td>
+                  <td class="order-td">
+                    {{if eq .Type "facebook"}}
+                    <button
+                      id="check-btn-{{ .ID }}"
+                      onclick="GetOtp('{{ .ID }}')"
+                      class="btn-primary text-white py-1.5 px-3 rounded-lg inline-flex items-center gap-1 text-sm"
+                    >
+                      <i class="fas fa-sync-alt"></i>
+                      Check
+                    </button>
+                    {{else if or (eq .Type "hotmailnew") (eq .Type "outlooknew")
+                    (eq .Type "hotmailtrust") (eq .Type "outlooktrust")}}
+                    <button
+                      id="check-btn-{{ .ID }}"
+                      onclick="GetOutlookOtpForOrder('{{ .ID }}', this)"
+                      class="btn-primary text-white py-1.5 px-3 rounded-lg inline-flex items-center gap-1 text-sm"
+                    >
+                      <i class="fas fa-sync-alt"></i>
+                      Check
+                    </button>
+                    {{ end }}
+                  </td>
+                </tr>
+                {{else}}
+                <tr>
+                  <td colspan="7" class="p-8 text-center text-slate-500">
+                    <i class="fas fa-inbox text-3xl mb-2 opacity-50"></i>
+                    <p>No orders found</p>
+                  </td>
+                </tr>
+                {{end}}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="grid gap-3.5 lg:hidden">
+          {{range .Orders}}
+          <div class="order-mcard">
+            <div class="flex items-start justify-between gap-3">
+              {{if eq .Status "completed"}}
+              <span class="status-pill ok"
+                ><i class="fas fa-check-circle"></i> {{.Status}}</span
+              >
+              {{else if eq .Status "pending"}}
+              <span class="status-pill run"
+                ><i class="fas fa-clock"></i> {{.Status}}</span
+              >
+              {{else if eq .Status "success"}}
+              <span class="status-pill ok"
+                ><i class="fas fa-check-circle"></i> {{.Status}}</span
+              >
+              {{else if eq .Status "running"}}
+              <span class="status-pill run"
+                ><i class="fas fa-clock"></i> {{.Status}}</span
+              >
+              {{else}}
+              <span class="status-pill bad"
+                ><i class="fas fa-times-circle"></i> {{.Status}}</span
+              >
+              {{end}} {{if eq .Type "facebook"}}
+              <button
+                id="check-btn-{{ .ID }}"
+                onclick="GetOtp('{{ .ID }}')"
+                class="btn-primary inline-flex items-center gap-2 text-white py-1.5 px-3 rounded-lg text-sm"
+              >
+                <i class="fas fa-sync-alt"></i>
+                Check
+              </button>
+              {{else if or (eq .Type "hotmailnew") (eq .Type "outlooknew") (eq
+              .Type "hotmailtrust") (eq .Type "outlooktrust")}}
+              <button
+                id="check-btn-{{ .ID }}"
+                onclick="GetOutlookOtpForOrder('{{ .ID }}', this)"
+                class="btn-primary inline-flex items-center gap-2 text-white py-1.5 px-3 rounded-lg text-sm"
+              >
+                <i class="fas fa-sync-alt"></i>
+                Check
+              </button>
+              {{end}}
+            </div>
+            <div class="mt-3.5 grid grid-cols-2 gap-3">
+              <div class="order-field col-span-2">
+                <div class="k">Mail</div>
+                <div class="v">
+                  <span
+                    class="mail-display copy-cell p-1.5 -m-1.5 block"
+                    onclick="copy(this)"
+                    >{{.Mail}}</span
+                  >
+                  <span
+                    class="mail-raw hidden"
+                    data-type="{{.Type}}"
+                    data-order-id="{{.ID}}"
+                    >{{.Mail}}</span
+                  >
+                </div>
+              </div>
+              <div class="order-field">
+                <div class="k">Service</div>
+                <div class="v flex items-center gap-1.5">
+                  {{if eq .Type "facebook"}}
+                  <svg class="tlogo"><use href="#logo-facebook"></use></svg>
+                  {{else if eq .Type "hotmailtrust"}}
+                  <svg class="tlogo"><use href="#logo-hotmail"></use></svg>
+                  {{else if eq .Type "hotmailnew"}}
+                  <svg class="tlogo"><use href="#logo-hotmail"></use></svg>
+                  {{else if eq .Type "outlooktrust"}}
+                  <svg class="tlogo"><use href="#logo-outlook"></use></svg>
+                  {{else if eq .Type "outlooknew"}}
+                  <svg class="tlogo"><use href="#logo-outlook"></use></svg>
+                  {{else if eq .Type "novery_kh"}}
+                  <svg class="tlogo"><use href="#logo-novery"></use></svg>
+                  {{else if eq .Type "novery_us"}}
+                  <svg class="tlogo"><use href="#logo-novery"></use></svg>
+                  {{end}} {{.Type}}
+                </div>
+              </div>
+              <div class="order-field">
+                <div class="k">Amount (USD)</div>
+                <div class="v" id="amount-{{ .ID }}">
+                  {{.AmountUSD}} / {{ .OtpCounter }}
+                </div>
+              </div>
+              <div class="order-field">
+                <div class="k">OTP</div>
+                <div
+                  class="v copy-cell p-1.5 -m-1.5 text-[var(--accent-hot)] font-bold"
+                  id="otp-{{ .ID }}"
+                  onclick="copy(this)"
+                >
+                  {{.LastOtp}}
+                </div>
+              </div>
+              <div class="order-field">
+                <div class="k">Created</div>
+                <div class="v text-[var(--muted)]" id="time-{{ .ID }}">
+                  {{.CreatedAt.Format "2006-01-02 15:04:05"}}
+                </div>
+              </div>
+            </div>
+          </div>
+          {{else}}
+          <div class="order-mcard text-center text-slate-500 py-6">
+            <i class="fas fa-inbox text-3xl mb-2 opacity-50"></i>
+            <p>No orders found</p>
+          </div>
+          {{end}}
+        </div>
+      </div>
+
+      <div
+        class="mt-8 flex flex-col sm:flex-row justify-between items-center gap-3 rise-in rise-in-delay-2"
+      >
+        <div class="w-full sm:w-auto">
+          {{if gt .Page 1}}
+          <a
+            href="/orders?page={{.PrevPage}}&type={{.TypeFilter}}"
+            class="pager-btn w-full sm:w-auto justify-center"
+          >
+            <svg
+              class="h-5 w-5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+            >
+              <path d="M15 19l-7-7 7-7" />
+            </svg>
+            Previous
+          </a>
+          {{end}}
+        </div>
+        <span class="text-sm text-[var(--muted)] font-semibold"
+          >Page {{.Page}} of {{.TotalPages}}</span
+        >
+        <div class="w-full sm:w-auto text-right">
+          {{if lt .Page .TotalPages}}
+          <a
+            href="/orders?page={{.NextPage}}&type={{.TypeFilter}}"
+            class="pager-btn w-full sm:w-auto justify-center"
+          >
+            Next
+            <svg
+              class="h-5 w-5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+            >
+              <path d="M9 5l7 7-7 7" />
+            </svg>
+          </a>
+          {{end}}
+        </div>
+      </div>
+    </main>
+
+    <!-- Buy amount overlay -->
+    <div
+      id="buy-modal"
+      class="buy-overlay hidden"
+      onclick="if (event.target === this) closeBuyModal()"
+    >
+      <div
+        class="buy-card"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="buy-title"
+      >
+        <div class="buy-grip"></div>
+        <div class="buy-head">
+          <span class="itile logo"
+            ><svg class="mlogo" viewBox="0 0 48 48">
+              <use id="buy-logo-use" href="#logo-hotmail"></use></svg
+          ></span>
+          <div class="min-w-0">
+            <h3 id="buy-title">Hotmail Trust</h3>
+            <p id="buy-desc">Trusted Hotmail</p>
+          </div>
+          <button class="buy-close" onclick="closeBuyModal()" aria-label="Close">
+            ✕
+          </button>
+        </div>
+        <div class="buy-body">
+          <div class="buy-priceline">
+            <span>Unit price <b id="buy-unit">$0.000</b></span>
+            <span>Available <b id="buy-stock">0</b></span>
+          </div>
+
+          <div class="buy-qtylabel">Quantity</div>
+          <div class="buy-stepper">
+            <button type="button" onclick="buyQtyStep(-1)" aria-label="Decrease">
+              −
+            </button>
+            <input
+              id="buy-qty"
+              type="number"
+              min="1"
+              step="1"
+              value="1"
+              inputmode="numeric"
+              pattern="[0-9]*"
+              onkeydown="blockQtyDecimal(event)"
+              oninput="sanitizeQtyInput()"
+            />
+            <button type="button" onclick="buyQtyStep(1)" aria-label="Increase">
+              +
+            </button>
+          </div>
+
+          <div class="buy-chips">
+            <button type="button" class="buy-chip" onclick="setBuyQty(5)">
+              5
+            </button>
+            <button type="button" class="buy-chip" onclick="setBuyQty(10)">
+              10
+            </button>
+            <button type="button" class="buy-chip" onclick="setBuyQty(25)">
+              25
+            </button>
+            <button type="button" class="buy-chip" onclick="setBuyQty(50)">
+              50
+            </button>
+            <button type="button" class="buy-chip" onclick="setBuyQty(100)">
+              100
+            </button>
+          </div>
+
+          <div class="buy-totalbox">
+            <div>
+              <div class="t-lbl">Total price</div>
+              <div class="t-sub">
+                <span id="buy-qty-label">1</span> ×
+                <span id="buy-unit-2">$0.000</span>
+              </div>
+            </div>
+            <div class="t-val" id="buy-total">$0.000</div>
+          </div>
+
+          <div class="buy-actions">
+            <button type="button" class="buy-cancel" onclick="closeBuyModal()">
+              Cancel
+            </button>
+            <button
+              type="button"
+              id="buy-confirm"
+              class="buy-confirm"
+              onclick="confirmBuy()"
+            >
+              <i class="fas fa-bolt"></i> Buy now
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="app-footer desktop-only">
+      <p>© 2026 YSHSHOPMAILS</p>
+    </footer>
+
+    <nav class="bottom-nav" aria-label="Mobile navigation">
+      <a href="/">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path
+            d="M3 10.5 12 3l9 7.5V21a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1v-10.5z"
+          />
+        </svg>
+        Home
+      </a>
+      <a href="/orders" class="active">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path d="M4 7h16M4 12h16M4 17h10" />
+        </svg>
+        Orders
+      </a>
+      <a href="/balance">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <rect x="3" y="6" width="18" height="12" rx="2" />
+          <path d="M3 10h18" />
+        </svg>
+        Balance
+      </a>
+      <a href="/api">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path d="M8 9H4v6h4M16 9h4v6h-4M10 12h4" />
+        </svg>
+        API
+      </a>
+      <a href="/logout">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path
+            d="M10 17H5a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h5M14 12h8M18 8l4 4-4 4"
+          />
+        </svg>
+        Out
+      </a>
+    </nav>
+
+    <div
+      id="toast"
+      class="fixed left-1/2 -translate-x-1/2 opacity-0 translate-y-4 pointer-events-none bg-slate-800 dark:bg-slate-200 text-white dark:text-slate-800 px-4 py-2 rounded-xl shadow-lg transition-all z-50"
+      style="bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px))"
+    ></div>
+  </body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{.Title}}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="/static/js/config.js"></script>
+    <link rel="icon" href="/static/img/yshshopmails-logo.png" type="image/png" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/static/css/app.css" />
+    <script defer src="/static/js/ui.js"></script>
+  </head>
+  <body class="app-body auth-page font-sans">
+    <div class="auth-shell">
+      <div class="surface auth-card rise-in">
+        <div class="text-center mb-8">
+          <div class="brand-mark mx-auto mb-4" style="width: 3.25rem; height: 3.25rem">
+            <img src="/static/img/yshshopmails-logo.png" alt="YSHSHOPMAILS" />
+          </div>
+          <p class="text-xs font-semibold tracking-[0.18em] uppercase text-teal-700 dark:text-teal-300 mb-2">
+            YSHSHOPMAILS
+          </p>
+          <h1 class="font-display text-2xl sm:text-3xl font-bold gradient-text mb-2">{{.Title}}</h1>
+          <p class="text-slate-600 dark:text-slate-300 text-sm">
+            Something went wrong
+          </p>
+        </div>
+
+        {{if .Error}}
+        <div
+          class="bg-red-50 dark:bg-red-500/15 border border-red-200 dark:border-red-500/30 text-red-700 dark:text-red-200 p-4 rounded-xl mb-6 text-sm"
+        >
+          {{.Error}}
+        </div>
+        {{end}}
+
+        <nav class="flex flex-col sm:flex-row gap-3">
+          <a
+            href="/"
+            class="btn-primary flex-1 text-center py-3 px-4 text-white"
+          >
+            Home
+          </a>
+          <a
+            href="/logout"
+            class="flex-1 text-center py-3 px-4 rounded-[0.85rem] font-semibold border border-slate-200 dark:border-white/15 bg-white/60 dark:bg-white/5 text-slate-700 dark:text-slate-200 hover:bg-teal-50 dark:hover:bg-white/10 transition-colors"
+          >
+            Logout
+          </a>
+        </nav>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,16 @@
+User-agent: *
+Allow: /$
+Allow: /api
+Allow: /register
+Allow: /login
+Disallow: /order
+Disallow: /balance
+Disallow: /admin
+Disallow: /logout
+Disallow: /activate
+Disallow: /reset
+Disallow: /forgot
+Disallow: /v1/
+Disallow: /v2/
+
+Sitemap: https://yshshopmails.com/sitemap.xml

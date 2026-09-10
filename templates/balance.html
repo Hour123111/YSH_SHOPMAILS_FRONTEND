@@ -1,0 +1,2096 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <title>{{.Title}} - Balance | YSHSHOPMAILS</title>
+    <meta
+      name="description"
+      content="Manage your YSHSHOPMAILS balance. Top up via Bakong KHQR or Binance and deposit only what you need."
+    />
+    <meta name="robots" content="noindex, follow" />
+    <meta name="theme-color" content="#0f766e" />
+    <link rel="canonical" href="https://yshshopmails.com/balance" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="/static/js/config.js"></script>
+    <link rel="icon" href="/static/img/yshshopmails-logo.png" type="image/png" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/static/css/app.css" />
+    <script defer src="/static/js/ui.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+    />
+    <style>
+      .btn-secondary {
+        background: linear-gradient(135deg, #0f766e 0%, #0e7490 100%);
+        box-shadow: 0 4px 6px -1px rgba(15, 118, 110, 0.3);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .btn-secondary:hover {
+        transform: translateY(-2px);
+        filter: brightness(1.05);
+      }
+      .btn-binance {
+        background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+        box-shadow: 0 4px 6px -1px rgba(217, 119, 6, 0.3);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        border: none;
+        cursor: pointer;
+        border-radius: 0.85rem;
+        padding: 0.85rem 1.1rem;
+        font-weight: 800;
+        font-size: 0.9rem;
+      }
+      .btn-binance:hover {
+        transform: translateY(-2px);
+        filter: brightness(1.05);
+      }
+      .btn-binance:disabled {
+        opacity: 0.7;
+        cursor: default;
+        transform: none;
+      }
+      .btn-binance-ghost {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        border: 1px solid rgba(217, 119, 6, 0.45);
+        background: rgba(217, 119, 6, 0.08);
+        color: #b45309;
+        cursor: pointer;
+        border-radius: 0.85rem;
+        padding: 0.85rem 1.1rem;
+        font-weight: 800;
+        font-size: 0.9rem;
+        transition: all 0.2s ease;
+      }
+      .dark .btn-binance-ghost {
+        color: #fbbf24;
+        border-color: rgba(251, 191, 36, 0.35);
+        background: rgba(251, 191, 36, 0.08);
+      }
+      .btn-binance-ghost:hover {
+        transform: translateY(-1px);
+        background: rgba(217, 119, 6, 0.14);
+      }
+      .binance-flow {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 0.65rem;
+      }
+      @media (min-width: 640px) {
+        .binance-flow {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+      @media (min-width: 1024px) {
+        .binance-flow {
+          grid-template-columns: repeat(4, 1fr);
+        }
+      }
+      .binance-flow-step {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.7rem;
+        padding: 0.85rem 0.9rem;
+        border-radius: 0.95rem;
+        border: 1px solid var(--line);
+        background: linear-gradient(180deg, var(--panel), var(--panel-2));
+      }
+      .binance-flow-step .n {
+        width: 1.7rem;
+        height: 1.7rem;
+        border-radius: 999px;
+        display: grid;
+        place-items: center;
+        flex-shrink: 0;
+        font-size: 0.75rem;
+        font-weight: 800;
+        color: #fff;
+        background: linear-gradient(135deg, #f59e0b, #d97706);
+        box-shadow: 0 8px 16px -10px rgba(217, 119, 6, 0.9);
+      }
+      .binance-flow-step b {
+        display: block;
+        font-size: 0.82rem;
+        font-weight: 800;
+        color: var(--ink);
+        line-height: 1.2;
+      }
+      .binance-flow-step p {
+        margin: 0.15rem 0 0;
+        font-size: 0.72rem;
+        color: var(--muted);
+        line-height: 1.35;
+      }
+      .binance-qr-card {
+        height: 100%;
+        min-height: 16rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 1.1rem;
+        border-radius: 1.15rem;
+        border: 1px solid rgba(217, 119, 6, 0.25);
+        background:
+          radial-gradient(circle at 50% 0%, rgba(245, 158, 11, 0.16), transparent 55%),
+          linear-gradient(180deg, var(--panel), var(--panel-2));
+      }
+      .binance-qr-frame {
+        padding: 0.65rem;
+        border-radius: 1rem;
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        box-shadow: 0 14px 30px -18px rgba(0, 0, 0, 0.35);
+      }
+      .binance-qr-frame img {
+        width: 9.5rem;
+        height: 9.5rem;
+        display: block;
+        border-radius: 0.55rem;
+      }
+      .binance-qr-caption {
+        margin-top: 0.85rem;
+        font-size: 0.8rem;
+        font-weight: 800;
+        color: var(--ink);
+      }
+      .binance-qr-sub {
+        margin-top: 0.15rem;
+        font-size: 0.68rem;
+        color: var(--muted);
+      }
+      .binance-step {
+        transition: all 0.3s ease;
+        border-left: 3px solid transparent;
+      }
+      .binance-step:hover {
+        border-left-color: #d97706;
+        background: rgba(217, 119, 6, 0.08);
+      }
+      .bn-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 130;
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        padding: 0;
+        background: rgba(15, 18, 24, 0.55);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        opacity: 0;
+        transition: opacity 0.22s ease;
+      }
+      @media (min-width: 640px) {
+        .bn-overlay {
+          align-items: center;
+          padding: 1.25rem;
+        }
+      }
+      .bn-overlay.hidden {
+        display: none;
+      }
+      .bn-overlay.open {
+        opacity: 1;
+      }
+      .bn-shell {
+        width: 100%;
+        max-width: 22.5rem;
+        transform: translateY(24px);
+        transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .bn-overlay.open .bn-shell {
+        transform: none;
+      }
+      .bn-card {
+        position: relative;
+        background: #fff;
+        border-radius: 1.15rem 1.15rem 0 0;
+        color: #181a20;
+        box-shadow: 0 24px 50px rgba(0, 0, 0, 0.28);
+      }
+      @media (min-width: 640px) {
+        .bn-card {
+          border-radius: 1.05rem;
+        }
+      }
+      .bn-card::before {
+        content: "";
+        display: block;
+        height: 4px;
+        background: #f0b90b;
+      }
+      .bn-head {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        padding: 1rem 1.15rem 0;
+      }
+      .bn-head .brand {
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        color: #707a8a;
+      }
+      .bn-head h3 {
+        margin: 0.15rem 0 0;
+        font-size: 1.05rem;
+        font-weight: 800;
+        color: #181a20;
+      }
+      .bn-x {
+        width: 2rem;
+        height: 2rem;
+        border: none;
+        background: #f5f6f7;
+        color: #707a8a;
+        border-radius: 999px;
+        cursor: pointer;
+        font-size: 1rem;
+        line-height: 1;
+      }
+      .bn-amount {
+        text-align: center;
+        padding: 0.85rem 1.15rem 0.35rem;
+      }
+      .bn-amount small {
+        display: block;
+        font-size: 0.72rem;
+        color: #707a8a;
+      }
+      .bn-amount strong {
+        display: block;
+        margin-top: 0.1rem;
+        font-size: 2rem;
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        color: #181a20;
+      }
+      .bn-body {
+        padding: 0.5rem 1.15rem 1.2rem;
+      }
+      .bn-qr {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 0.4rem 0 0.9rem;
+      }
+      .bn-qr img {
+        width: 11.5rem;
+        height: 11.5rem;
+        display: block;
+        background: #fff;
+      }
+      .bn-qr span {
+        margin-top: 0.45rem;
+        font-size: 0.75rem;
+        color: #707a8a;
+      }
+      .bn-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.75rem;
+        padding: 0.7rem 0;
+        border-top: 1px solid #eaecef;
+        border-bottom: 1px solid #eaecef;
+        margin-bottom: 0.9rem;
+      }
+      .bn-row .k {
+        font-size: 0.75rem;
+        color: #707a8a;
+      }
+      .bn-row .v {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.92rem;
+        font-weight: 700;
+        font-variant-numeric: tabular-nums;
+      }
+      .bn-row button {
+        border: none;
+        background: transparent;
+        color: #c99400;
+        font-size: 0.75rem;
+        font-weight: 700;
+        cursor: pointer;
+        padding: 0;
+      }
+      .bn-label {
+        display: block;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: #707a8a;
+        margin-bottom: 0.4rem;
+      }
+      .bn-body .input-field {
+        background: #f5f6f7;
+        border-color: #eaecef;
+        color: #181a20;
+      }
+      .bn-body .input-field:focus {
+        border-color: #f0b90b;
+        box-shadow: 0 0 0 3px rgba(240, 185, 11, 0.18);
+      }
+      .bn-confirm {
+        width: 100%;
+        margin-top: 0.85rem;
+        border: none;
+        cursor: pointer;
+        border-radius: 0.55rem;
+        padding: 0.85rem;
+        font-size: 0.95rem;
+        font-weight: 800;
+        color: #181a20;
+        background: #f0b90b;
+        transition: filter 0.15s ease;
+      }
+      .bn-confirm:hover {
+        filter: brightness(1.04);
+      }
+      .bn-confirm:disabled {
+        opacity: 0.7;
+        cursor: default;
+      }
+      .bn-link {
+        display: block;
+        margin-top: 0.7rem;
+        text-align: center;
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: #c99400;
+        font-size: 0.82rem;
+        font-weight: 700;
+      }
+      .badge {
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.5rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.025em;
+      }
+      .tlogo {
+        width: 1.1rem;
+        height: 1.1rem;
+        border-radius: 0.3rem;
+        flex-shrink: 0;
+      }
+      .tx-type-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+      }
+      .qr-container {
+        transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      @media (max-width: 768px) {
+        .responsive-table {
+          display: block;
+          overflow-x: auto;
+          white-space: nowrap;
+        }
+      }
+
+      /* ===== KHQR overlay + premium card ===== */
+      :root {
+        --khqr-accent: #e21836;
+        --khqr-accent-mid: #c8102e;
+        --khqr-accent-deep: #8f0a20;
+      }
+      .khqr-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 130;
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        padding: 0;
+        background: rgba(6, 12, 22, 0.62);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        opacity: 0;
+        transition: opacity 0.24s ease;
+      }
+      @media (min-width: 640px) {
+        .khqr-overlay {
+          align-items: center;
+          padding: 1.5rem;
+        }
+      }
+      .khqr-overlay.hidden {
+        display: none;
+      }
+      .khqr-overlay.open {
+        opacity: 1;
+      }
+      .khqr-shell {
+        position: relative;
+        width: 100%;
+        max-width: 22rem;
+        transform: translateY(32px);
+        transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .khqr-store {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+        margin-bottom: 0.85rem;
+        font-family: "Space Grotesk", "Manrope", sans-serif;
+        font-weight: 800;
+        font-size: 0.92rem;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: #ffffff;
+        text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
+      }
+      @media (min-width: 640px) {
+        .khqr-store {
+          color: #ffffff;
+          letter-spacing: 0.18em;
+        }
+      }
+      @media (min-width: 640px) {
+        .khqr-shell {
+          transform: translateY(18px) scale(0.97);
+        }
+      }
+      .khqr-overlay.open .khqr-shell {
+        transform: none;
+      }
+      .khqr-close {
+        display: none;
+      }
+      .khqr-glow {
+        display: none;
+      }
+      .khqr-card {
+        position: relative;
+        z-index: 1;
+        width: 100%;
+        background: #ffffff;
+        border-radius: 1.35rem 1.35rem 0 0;
+        overflow: hidden;
+        box-shadow: 0 28px 70px -24px rgba(226, 24, 54, 0.45),
+          0 16px 40px rgba(0, 0, 0, 0.18);
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        color: #111827;
+      }
+      @media (min-width: 640px) {
+        .khqr-card {
+          border-radius: 1.35rem;
+        }
+      }
+      .khqr-top {
+        background: linear-gradient(
+          135deg,
+          var(--khqr-accent) 0%,
+          var(--khqr-accent-mid) 55%,
+          var(--khqr-accent-deep) 100%
+        );
+        padding: 1rem 1.15rem 0.85rem;
+        position: relative;
+        overflow: hidden;
+      }
+      .khqr-top::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+          circle at 85% 0%,
+          rgba(255, 255, 255, 0.22),
+          transparent 55%
+        );
+      }
+      .khqr-top::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        border-width: 0 1.6rem 1.6rem 0;
+        border-style: solid;
+        border-color: transparent rgba(255, 255, 255, 0.22) transparent
+          transparent;
+      }
+      .khqr-brand {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.75rem;
+      }
+      .khqr-word {
+        color: #ffffff;
+        font-family: "Space Grotesk", "Manrope", sans-serif;
+        font-weight: 800;
+        font-size: 1.35rem;
+        letter-spacing: 0.08em;
+        line-height: 1;
+      }
+      .khqr-sub {
+        margin-top: 0.2rem;
+        font-size: 0.68rem;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.78);
+      }
+      .khqr-chip {
+        flex-shrink: 0;
+        padding: 0.28rem 0.55rem;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.16);
+        border: 1px solid rgba(255, 255, 255, 0.28);
+        color: #fff;
+        font-size: 0.62rem;
+        font-weight: 800;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+      .khqr-body {
+        padding: 1.05rem 1.15rem 0.9rem;
+      }
+      .khqr-merchant {
+        font-weight: 800;
+        font-size: 1.02rem;
+        color: #111827;
+        line-height: 1.2;
+        word-break: break-word;
+      }
+      .khqr-amount {
+        margin-top: 0.35rem;
+        display: flex;
+        align-items: baseline;
+        gap: 0.35rem;
+      }
+      .khqr-amount .num {
+        font-family: "Space Grotesk", "Manrope", sans-serif;
+        font-weight: 800;
+        font-size: 2rem;
+        color: #111827;
+        line-height: 1;
+      }
+      .khqr-amount .cur {
+        font-size: 0.92rem;
+        font-weight: 700;
+        color: #6b7280;
+      }
+      .khqr-divider {
+        position: relative;
+        height: 1.5rem;
+        margin: 0.9rem -1.15rem;
+      }
+      .khqr-divider .dash {
+        position: absolute;
+        top: 50%;
+        left: 1.15rem;
+        right: 1.15rem;
+        border-top: 2px dashed #d1d5db;
+      }
+      .khqr-divider::before,
+      .khqr-divider::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        width: 1.5rem;
+        height: 1.5rem;
+        border-radius: 999px;
+        background: #f3f4f6;
+        transform: translateY(-50%);
+        box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.04);
+      }
+      .khqr-divider::before {
+        left: -0.75rem;
+      }
+      .khqr-divider::after {
+        right: -0.75rem;
+      }
+      .khqr-qr-wrap {
+        position: relative;
+        padding: 0.35rem 0 0.15rem;
+      }
+      .khqr-qr-frame {
+        position: relative;
+        margin: 0 auto;
+        width: min(100%, 15.5rem);
+        padding: 0.85rem;
+        border-radius: 1rem;
+        background: linear-gradient(180deg, #fafafa, #fff);
+        border: 1px solid #e5e7eb;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9),
+          0 10px 24px -16px rgba(0, 0, 0, 0.25);
+      }
+      .khqr-qr-frame::before,
+      .khqr-qr-frame::after {
+        content: "";
+        position: absolute;
+        width: 1.1rem;
+        height: 1.1rem;
+        border: 3px solid var(--khqr-accent);
+        pointer-events: none;
+      }
+      .khqr-qr-frame::before {
+        top: 0.45rem;
+        left: 0.45rem;
+        border-right: none;
+        border-bottom: none;
+        border-radius: 0.35rem 0 0 0;
+      }
+      .khqr-qr-frame::after {
+        bottom: 0.45rem;
+        right: 0.45rem;
+        border-left: none;
+        border-top: none;
+        border-radius: 0 0 0.35rem 0;
+      }
+      .khqr-scan-pulse {
+        position: absolute;
+        inset: 0.85rem;
+        border-radius: 0.65rem;
+        border: 2px solid rgba(226, 24, 54, 0.35);
+        animation: khqrPulse 2.2s ease-in-out infinite;
+        pointer-events: none;
+      }
+      @keyframes khqrPulse {
+        0%,
+        100% {
+          opacity: 0.35;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 0.85;
+          transform: scale(1.02);
+        }
+      }
+      .khqr-qr img {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 1;
+        display: block;
+        border-radius: 0.45rem;
+        image-rendering: pixelated;
+      }
+      .khqr-foot {
+        padding: 0.85rem 1.15rem 1.15rem;
+        background: #ffffff;
+        border-top: 1px dashed #e5e7eb;
+      }
+      .khqr-hint {
+        font-size: 0.72rem;
+        line-height: 1.45;
+        color: #6b7280;
+        text-align: center;
+        margin-bottom: 0.75rem;
+      }
+      .khqr-actions {
+        display: block;
+      }
+      .khqr-btn {
+        border: none;
+        cursor: pointer;
+        border-radius: 0.85rem;
+        padding: 0.78rem 1rem;
+        font-size: 0.82rem;
+        font-weight: 800;
+        width: 100%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.4rem;
+        transition: transform 0.12s ease, filter 0.12s ease, box-shadow 0.12s ease;
+      }
+      .khqr-btn:hover {
+        transform: translateY(-1px);
+        filter: brightness(1.04);
+      }
+      .khqr-btn.close-btn {
+        color: #fff;
+        background: linear-gradient(
+          135deg,
+          var(--khqr-accent) 0%,
+          var(--khqr-accent-mid) 100%
+        );
+        box-shadow: 0 12px 24px -14px rgba(226, 24, 54, 0.75);
+        letter-spacing: 0.04em;
+      }
+      .khqr-btn.close-btn:hover {
+        box-shadow: 0 14px 28px -12px rgba(226, 24, 54, 0.85);
+      }
+      .khqr-loading {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 2.5rem 1.5rem 2rem;
+        text-align: center;
+      }
+      .khqr-spinner {
+        width: 3rem;
+        height: 3rem;
+        border-radius: 999px;
+        border: 3px solid rgba(226, 24, 54, 0.15);
+        border-top-color: var(--khqr-accent);
+        animation: khqrSpin 0.8s linear infinite;
+        margin-bottom: 1rem;
+      }
+      @keyframes khqrSpin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      .khqr-loading p {
+        margin: 0;
+        font-size: 0.88rem;
+        font-weight: 700;
+        color: #374151;
+      }
+      .khqr-loading small {
+        display: block;
+        margin-top: 0.35rem;
+        font-size: 0.72rem;
+        color: #6b7280;
+      }
+    </style>
+  </head>
+  <body
+    class="app-body flex flex-col min-h-screen font-sans text-slate-800 dark:text-slate-200"
+  >
+    <svg width="0" height="0" style="position: absolute" aria-hidden="true">
+      <defs>
+        <linearGradient id="g-fb" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#3b8bff" />
+          <stop offset="1" stop-color="#0a58d6" />
+        </linearGradient>
+        <linearGradient id="g-hm" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#2ec5ff" />
+          <stop offset="1" stop-color="#0a74d6" />
+        </linearGradient>
+        <linearGradient id="g-ol" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#1f6bff" />
+          <stop offset="1" stop-color="#052a80" />
+        </linearGradient>
+        <linearGradient id="g-nv" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#b671ff" />
+          <stop offset="1" stop-color="#ec4899" />
+        </linearGradient>
+      </defs>
+      <symbol id="logo-facebook" viewBox="0 0 48 48">
+        <rect width="48" height="48" rx="13" fill="url(#g-fb)" />
+        <path
+          d="M27.5 40V26.5h4.3l.7-5.2h-5V18c0-1.5.5-2.6 2.7-2.6H33V10.8c-.5-.07-2.1-.2-3.9-.2-3.9 0-6.6 2.4-6.6 6.7v3.9h-4.3v5.2h4.3V40h5z"
+          fill="#fff"
+        />
+      </symbol>
+      <symbol id="logo-hotmail" viewBox="0 0 48 48">
+        <rect width="48" height="48" rx="13" fill="url(#g-hm)" />
+        <rect x="11" y="16" width="26" height="17" rx="2.5" fill="#fff" />
+        <path
+          d="M12.5 18.5 24 26l11.5-7.5"
+          fill="none"
+          stroke="#0a74d6"
+          stroke-width="2.4"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </symbol>
+      <symbol id="logo-outlook" viewBox="0 0 48 48">
+        <rect width="48" height="48" rx="13" fill="url(#g-ol)" />
+        <rect x="22" y="17" width="15" height="14" rx="2" fill="#fff" />
+        <ellipse cx="18" cy="24" rx="8.5" ry="9.5" fill="#0a3bb0" />
+        <ellipse cx="18" cy="24" rx="4.4" ry="5.2" fill="#fff" />
+      </symbol>
+      <symbol id="logo-novery" viewBox="0 0 48 48">
+        <rect width="48" height="48" rx="13" fill="url(#g-nv)" />
+        <path
+          d="M24 11l10 3.4v7.2c0 6.6-4.3 10.6-10 12.4-5.7-1.8-10-5.8-10-12.4v-7.2L24 11z"
+          fill="#fff"
+        />
+      </symbol>
+    </svg>
+    <header class="app-header">
+      <div class="max-w-6xl mx-auto section-pad py-3 flex items-center gap-3">
+        <a href="/" class="flex items-center gap-2.5 min-w-0">
+          <div class="brand-mark">
+            <img src="/static/img/yshshopmails-logo.png" alt="YSHSHOPMAILS" />
+          </div>
+          <div class="min-w-0">
+            <div
+              class="font-display font-bold text-[0.95rem] sm:text-base leading-tight truncate"
+            >
+              YSHSHOPMAILS
+            </div>
+            <div class="text-[0.72rem] sm:text-xs text-[var(--muted)]">
+              Balance <b class="text-[var(--brand)]">${{ .Balance }}</b>
+            </div>
+          </div>
+        </a>
+        <nav class="ml-auto hidden md:flex items-center gap-1">
+          <a href="/" class="nav-link">Home</a>
+          <a href="/api" class="nav-link">API</a>
+          <a
+            href="https://tools.yshshopmails.com"
+            class="nav-link"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Tools</a
+          >
+          <a href="/orders" class="nav-link">Orders</a>
+          <a href="/balance" class="nav-link active">Balance</a>
+          <a href="/logout" class="nav-link">Logout</a>
+          <button
+            onclick="toggleTheme()"
+            class="nav-link"
+            aria-label="Toggle theme"
+          >
+            ◐
+          </button>
+        </nav>
+        <button
+          onclick="toggleTheme()"
+          class="md:hidden ml-auto nav-link"
+          aria-label="Toggle theme"
+        >
+          ◐
+        </button>
+      </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto section-pad py-4 sm:py-6 flex-grow w-full">
+      {{if .Error}}
+      <div class="panel border border-red-500/30 p-4 rounded-xl mb-6 rise-in">
+        <div class="flex items-center">
+          <div class="flex-shrink-0">
+            <svg
+              class="h-5 w-5 text-red-500 dark:text-red-400"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </div>
+          <div class="ml-3">
+            <p class="text-sm text-red-700 dark:text-red-300">{{.Error}}</p>
+          </div>
+        </div>
+      </div>
+      {{end}}
+
+      <div class="panel p-4 sm:p-6 mb-6 rise-in">
+        <div
+          class="flex flex-col sm:flex-row justify-between items-start sm:items-center"
+        >
+          <div>
+            <h2
+              class="text-lg font-medium text-slate-600 dark:text-slate-300 mb-2"
+            >
+              Current Balance
+            </h2>
+            <p class="font-display text-4xl font-bold gradient-text mb-2">
+              ${{.Balance}} USD
+            </p>
+          </div>
+          <div class="mt-4 sm:mt-0">
+            <span
+              class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-teal-50/80 dark:bg-white/5 text-teal-700 dark:text-teal-300 border border-slate-200/60 dark:border-white/10"
+            >
+              {{.TotalTransactions}} transactions
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel p-4 sm:p-6 mb-6 rise-in rise-in-delay-1">
+        <h2 class="font-display text-2xl font-bold gradient-text mb-6">
+          Deposit Methods
+        </h2>
+
+        <div class="flex flex-wrap gap-3 mb-8">
+          <button
+            onclick="showDepositMethod('bakong')"
+            id="bakong-tab"
+            class="deposit-tab active px-6 py-3 rounded-lg font-medium transition"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5 inline mr-2"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M3 4a1 1 0 011-1h3a1 1 0 011 1v3a1 1 0 01-1 1H4a1 1 0 01-1-1V4zm2 2V5h1v1H5zM3 13a1 1 0 011-1h3a1 1 0 011 1v3a1 1 0 01-1 1H4a1 1 0 01-1-1v-3zm2 2v-1h1v1H5zM13 3a1 1 0 00-1 1v3a1 1 0 001 1h3a1 1 0 001-1V4a1 1 0 00-1-1h-3zm1 2v1h1V5h-1z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            Bakong QR
+          </button>
+          <button
+            onclick="showDepositMethod('binance')"
+            id="binance-tab"
+            class="deposit-tab px-6 py-3 rounded-lg font-medium transition"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5 inline mr-2"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z"
+              />
+            </svg>
+            Binance Transfer
+          </button>
+        </div>
+
+        <div id="bakong-method" class="deposit-method">
+          <h3
+            class="font-display text-xl font-semibold text-slate-800 dark:text-white mb-6 flex items-center"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-6 w-6 text-teal-600 dark:text-teal-300 mr-3"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            Deposit via Bakong QR
+          </h3>
+
+          <div
+            class="flex flex-col sm:flex-row gap-4 items-start sm:items-end mb-6"
+          >
+            <div class="flex-1 w-full">
+              <label
+                for="input_amount"
+                class="block text-sm font-medium text-slate-600 dark:text-slate-300 mb-2"
+                >Amount (USD)</label
+              >
+              <div class="relative">
+                <span
+                  class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-500 dark:text-slate-400 font-semibold"
+                  >$</span
+                >
+                <input
+                  type="number"
+                  id="input_amount"
+                  name="amount"
+                  step="0.01"
+                  min="1"
+                  value="10"
+                  class="input-field w-full rounded-lg"
+                  style="padding-left: 2rem"
+                  placeholder="10.00"
+                />
+              </div>
+            </div>
+
+            <button
+              onclick="showQR()"
+              class="btn-primary text-white px-6 py-3 rounded-lg font-medium w-full sm:w-auto"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5 inline mr-2 -mt-1"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M3 4a1 1 0 011-1h3a1 1 0 011 1v3a1 1 0 01-1 1H4a1 1 0 01-1-1V4zm2 2V5h1v1H5zM3 13a1 1 0 011-1h3a1 1 0 011 1v3a1 1 0 01-1 1H4a1 1 0 01-1-1v-3zm2 2v-1h1v1H5zM13 3a1 1 0 00-1 1v3a1 1 0 001 1h3a1 1 0 001-1V4a1 1 0 00-1-1h-3zm1 2v1h1V5h-1z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+              Generate Bakong KHQR
+            </button>
+          </div>
+
+          <p class="text-sm text-slate-500 dark:text-slate-400">
+            Enter amount and tap generate — a secure KHQR overlay will open for
+            scanning with any Cambodian banking app.
+          </p>
+        </div>
+
+        <div id="binance-method" class="deposit-method hidden">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+            <h3
+              class="font-display text-xl font-semibold text-slate-800 dark:text-white flex items-center"
+            >
+              <div
+                class="w-10 h-10 bg-gradient-to-r from-amber-400 to-amber-600 rounded-xl flex items-center justify-center mr-3 shadow-lg shadow-amber-500/25"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-5 w-5 text-white"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z"
+                  />
+                </svg>
+              </div>
+              Deposit via Binance Transfer
+            </h3>
+            <div class="flex items-center px-3 py-1.5 panel rounded-full self-start sm:self-auto">
+              <div class="w-2 h-2 bg-amber-500 rounded-full mr-2 animate-pulse"></div>
+              <span
+                class="text-sm font-medium text-amber-600 dark:text-amber-300"
+                >USDT Network</span
+              >
+            </div>
+          </div>
+
+          <!-- Compact how-to -->
+          <div class="binance-flow mb-6">
+            <div class="binance-flow-step">
+              <span class="n">1</span>
+              <div>
+                <b>Enter amount</b>
+                <p>USD you will send</p>
+              </div>
+            </div>
+            <div class="binance-flow-step">
+              <span class="n">2</span>
+              <div>
+                <b>Confirm</b>
+                <p>Get Binance ID + QR</p>
+              </div>
+            </div>
+            <div class="binance-flow-step">
+              <span class="n">3</span>
+              <div>
+                <b>Send USDT</b>
+                <p>Transfer the exact amount</p>
+              </div>
+            </div>
+            <div class="binance-flow-step">
+              <span class="n">4</span>
+              <div>
+                <b>Paste Order ID</b>
+                <p>Then check payment</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex flex-col sm:flex-row gap-4 items-start sm:items-end mb-4">
+            <div class="flex-1 w-full">
+              <label
+                for="binance_amount"
+                class="block text-sm font-medium text-slate-600 dark:text-slate-300 mb-2"
+                >Amount (USD)</label
+              >
+              <div class="relative">
+                <span
+                  class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-500 dark:text-slate-400 font-semibold"
+                  >$</span
+                >
+                <input
+                  type="number"
+                  id="binance_amount"
+                  name="binance_amount"
+                  step="0.01"
+                  min="1"
+                  value="10"
+                  class="input-field w-full rounded-lg"
+                  style="padding-left: 2rem"
+                  placeholder="10.00"
+                />
+              </div>
+            </div>
+            <button
+              type="button"
+              onclick="openBinanceCheckout()"
+              class="btn-binance text-white w-full sm:w-auto"
+            >
+              Confirm
+            </button>
+          </div>
+
+          <p class="text-sm text-slate-500 dark:text-slate-400">
+            Enter the amount, then confirm to send via Binance ID and Order ID.
+          </p>
+        </div>
+      </div>
+
+      <div class="panel p-4 sm:p-6 mb-6 rise-in rise-in-delay-2">
+        <div
+          class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6"
+        >
+          <h2
+            class="font-display text-2xl font-bold gradient-text flex items-center"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-6 w-6 text-teal-600 dark:text-teal-300 mr-3"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z" />
+              <path
+                fill-rule="evenodd"
+                d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            Transaction History
+          </h2>
+
+          <div class="flex gap-3 mt-4 sm:mt-0">
+            <a
+              href="/balance?page=1&type=deposit"
+              class="px-4 py-2 text-sm rounded-lg bg-teal-50/80 dark:bg-white/5 text-teal-700 dark:text-teal-300 font-medium border border-teal-500/40"
+              >Deposits</a
+            >
+            <a
+              href="/balance"
+              class="px-4 py-2 text-sm rounded-lg bg-teal-50/40 dark:bg-white/5 text-slate-600 dark:text-slate-300 font-medium border border-slate-200/60 dark:border-white/10"
+              >All</a
+            >
+          </div>
+        </div>
+
+        <div
+          class="responsive-table rounded-xl overflow-hidden border border-slate-200/60 dark:border-white/10"
+        >
+          <table class="w-full">
+            <thead>
+              <tr
+                class="border-b border-slate-200 dark:border-white/10 bg-teal-50/40 dark:bg-white/5"
+              >
+                <th
+                  class="p-4 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider"
+                >
+                  ID
+                </th>
+                <th
+                  class="p-4 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider"
+                >
+                  Amount
+                </th>
+                <th
+                  class="p-4 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider"
+                >
+                  Type
+                </th>
+                <th
+                  class="p-4 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider"
+                >
+                  Note
+                </th>
+                <th
+                  class="p-4 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider"
+                >
+                  Time
+                </th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-200 dark:divide-white/10">
+              {{range .Transactions}}
+              <tr
+                class="table-row transition"
+                data-tx-row
+                data-tx-type="{{.Type}}"
+                data-tx-note="{{.Note}}"
+              >
+                <td
+                  class="p-4 text-sm font-medium text-slate-800 dark:text-white"
+                >
+                  {{.ID}}
+                </td>
+                <td
+                  class="p-4 text-sm font-medium text-slate-800 dark:text-white"
+                >
+                  {{.AmountUSD}} USD
+                </td>
+                <td class="p-4" data-tx-type-cell>
+                  {{if eq .Type "hotmailtrust"}}
+                  <span class="badge badge-withdraw tx-type-badge">
+                    <svg class="tlogo" viewBox="0 0 48 48">
+                      <use href="#logo-hotmail"></use>
+                    </svg>
+                    hotmailtrust
+                  </span>
+                  {{else if eq .Type "outlooktrust"}}
+                  <span class="badge badge-withdraw tx-type-badge">
+                    <svg class="tlogo" viewBox="0 0 48 48">
+                      <use href="#logo-outlook"></use>
+                    </svg>
+                    outlooktrust
+                  </span>
+                  {{else if eq .Type "hotmailnew"}}
+                  <span class="badge badge-withdraw tx-type-badge">
+                    <svg class="tlogo" viewBox="0 0 48 48">
+                      <use href="#logo-hotmail"></use>
+                    </svg>
+                    hotmailnew
+                  </span>
+                  {{else if eq .Type "outlooknew"}}
+                  <span class="badge badge-withdraw tx-type-badge">
+                    <svg class="tlogo" viewBox="0 0 48 48">
+                      <use href="#logo-outlook"></use>
+                    </svg>
+                    outlooknew
+                  </span>
+                  {{else if eq .Type "facebook"}}
+                  <span class="badge badge-withdraw tx-type-badge">
+                    <svg class="tlogo" viewBox="0 0 48 48">
+                      <use href="#logo-facebook"></use>
+                    </svg>
+                    facebook
+                  </span>
+                  {{else if eq .Type "novery_kh"}}
+                  <span class="badge badge-withdraw tx-type-badge">
+                    <svg class="tlogo" viewBox="0 0 48 48">
+                      <use href="#logo-novery"></use>
+                    </svg>
+                    novery_kh
+                  </span>
+                  {{else if eq .Type "novery_us"}}
+                  <span class="badge badge-withdraw tx-type-badge">
+                    <svg class="tlogo" viewBox="0 0 48 48">
+                      <use href="#logo-novery"></use>
+                    </svg>
+                    novery_us
+                  </span>
+                  {{else if gt .Amount 0}}
+                  <span class="badge badge-deposit tx-type-badge">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="h-4 w-4"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
+                        clip-rule="evenodd"
+                      />
+                    </svg>
+                    {{.Type}}
+                  </span>
+                  {{else}}
+                  <span class="badge badge-withdraw tx-type-badge">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="h-4 w-4"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M5 10a1 1 0 011-1h8a1 1 0 110 2H6a1 1 0 01-1-1z"
+                        clip-rule="evenodd"
+                      />
+                    </svg>
+                    {{.Type}}
+                  </span>
+                  {{end}}
+                </td>
+                <td class="p-4 text-sm text-slate-600 dark:text-slate-300">
+                  {{.Note}}
+                </td>
+                <td class="p-4 text-sm text-slate-600 dark:text-slate-300">
+                  <div class="flex items-center">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="h-4 w-4 text-slate-400 mr-2"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
+                        clip-rule="evenodd"
+                      />
+                    </svg>
+                    {{.CreatedAt.Format "Jan 2, 2006 15:04"}}
+                  </div>
+                </td>
+              </tr>
+              {{else}}
+              <tr>
+                <td colspan="5" class="p-12 text-center">
+                  <div
+                    class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="h-16 w-16 mb-4 text-slate-400 dark:text-slate-500"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="1.5"
+                        d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                    <p
+                      class="text-lg font-medium text-slate-700 dark:text-slate-300"
+                    >
+                      No transactions found
+                    </p>
+                    <p class="text-sm mt-2">
+                      Your transaction history will appear here
+                    </p>
+                  </div>
+                </td>
+              </tr>
+              {{end}}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
+        <div class="order-2 sm:order-1">
+          <span class="text-sm text-slate-500 dark:text-slate-400"
+            >Page {{.Page}} of {{.TotalPages}}</span
+          >
+        </div>
+        <div class="flex gap-3 order-1 sm:order-2">
+          {{if gt .Page 1}}
+          <a
+            href="/balance?page={{.PrevPage}}&type={{.TypeFilter}}"
+            class="btn-primary text-white py-2 px-6 rounded-lg text-sm font-medium flex items-center"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-4 w-4 mr-2"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            Previous
+          </a>
+          {{else}}
+          <button
+            disabled
+            class="panel text-slate-400 dark:text-slate-500 py-2 px-6 rounded-lg text-sm font-medium cursor-not-allowed flex items-center opacity-60"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-4 w-4 mr-2"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            Previous
+          </button>
+          {{end}} {{if lt .Page .TotalPages}}
+          <a
+            href="/balance?page={{.NextPage}}&type={{.TypeFilter}}"
+            class="btn-primary text-white py-2 px-6 rounded-lg text-sm font-medium flex items-center"
+          >
+            Next
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-4 w-4 ml-2"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </a>
+          {{else}}
+          <button
+            disabled
+            class="panel text-slate-400 dark:text-slate-500 py-2 px-6 rounded-lg text-sm font-medium cursor-not-allowed flex items-center opacity-60"
+          >
+            Next
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-4 w-4 ml-2"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </button>
+          {{end}}
+        </div>
+      </div>
+    </main>
+
+    <!-- Bakong KHQR payment overlay -->
+    <div
+      id="khqr-overlay"
+      class="khqr-overlay hidden"
+      onclick="if (event.target === this) closeKhqrOverlay()"
+    >
+      <div class="khqr-shell" role="dialog" aria-modal="true" aria-labelledby="khqr-title">
+        <div class="khqr-glow"></div>
+
+        <div class="khqr-store">YSH SHOP MAIL</div>
+
+        <div class="khqr-card">
+          <div id="khqr-loading" class="khqr-loading">
+            <div class="khqr-spinner"></div>
+            <p id="transaction_txt">Preparing your transaction...</p>
+            <small>Generating secure Bakong KHQR payment code</small>
+          </div>
+
+          <div id="khqr-ready" class="hidden">
+            <div class="khqr-top">
+              <div class="khqr-brand">
+                <div>
+                  <div class="khqr-word" id="khqr-title">KHQR</div>
+                  <div class="khqr-sub">Bakong Payment</div>
+                </div>
+                <span class="khqr-chip">Scan &amp; Pay</span>
+              </div>
+            </div>
+
+            <div class="khqr-body">
+              <div class="khqr-merchant">{{.Title}}</div>
+              <div class="khqr-amount">
+                <span id="khqr-amount" class="num">10.00</span>
+                <span class="cur">USD</span>
+              </div>
+              <div class="khqr-divider"><span class="dash"></span></div>
+              <div class="khqr-qr-wrap">
+                <div class="khqr-qr-frame">
+                  <span class="khqr-scan-pulse"></span>
+                  <img id="bank_qr" src="" alt="Bakong KHQR Code" />
+                </div>
+              </div>
+            </div>
+
+            <div class="khqr-foot">
+              <p class="khqr-hint">
+                Open ABA, ACLEDA, Wing or any Bakong app → Scan QR → Confirm
+                payment. We auto-check every 5 seconds.
+              </p>
+              <div class="khqr-actions">
+                <button
+                  type="button"
+                  class="khqr-btn close-btn"
+                  onclick="closeKhqrOverlay()"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Binance checkout overlay -->
+    <div
+      id="bn-overlay"
+      class="bn-overlay hidden"
+      onclick="if (event.target === this) closeBinanceCheckout()"
+    >
+      <div class="bn-shell" role="dialog" aria-modal="true" aria-labelledby="bn-title">
+        <div class="bn-card">
+          <div class="bn-head">
+            <div>
+              <div class="brand">YSH SHOP MAIL</div>
+              <h3 id="bn-title">Binance Pay</h3>
+            </div>
+            <button type="button" class="bn-x" onclick="closeBinanceCheckout()" aria-label="Close">
+              ×
+            </button>
+          </div>
+
+          <div class="bn-amount">
+            <small>Amount</small>
+            <strong>$<span id="bn-amount-display">10.00</span></strong>
+          </div>
+
+          <div class="bn-body">
+            <div class="bn-qr">
+              <img src="/static/binance1.jpg" alt="Binance QR Code" />
+              <span>Scan to send USDT</span>
+            </div>
+
+            <div class="bn-row">
+              <span class="k">Binance ID</span>
+              <span class="v">
+                <span id="bn-popup-id">1122194030</span>
+                <button
+                  type="button"
+                  onclick="copyToClipboard('bn-popup-id', 'Binance ID copied!')"
+                >
+                  Copy
+                </button>
+              </span>
+            </div>
+
+            <label for="binance_order_id" class="bn-label">Order ID</label>
+            <input
+              type="text"
+              id="binance_order_id"
+              name="binance_order_id"
+              class="input-field w-full rounded-lg"
+              placeholder="Paste Order ID"
+              autocomplete="off"
+              spellcheck="false"
+            />
+
+            <button
+              type="button"
+              id="binance-check-btn"
+              onclick="checkBinancePayment()"
+              class="bn-confirm"
+            >
+              Confirm
+            </button>
+            <button type="button" class="bn-link" onclick="openBinanceApp()">
+              Open Binance App
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="app-footer desktop-only">
+      <p>© 2026 YSHSHOPMAILS</p>
+    </footer>
+
+    <nav class="bottom-nav" aria-label="Mobile navigation">
+      <a href="/">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path
+            d="M3 10.5 12 3l9 7.5V21a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1v-10.5z"
+          />
+        </svg>
+        Home
+      </a>
+      <a href="/orders">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path d="M4 7h16M4 12h16M4 17h10" />
+        </svg>
+        Orders
+      </a>
+      <a href="/balance" class="active">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <rect x="3" y="6" width="18" height="12" rx="2" />
+          <path d="M3 10h18" />
+        </svg>
+        Balance
+      </a>
+      <a href="/api">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path d="M8 9H4v6h4M16 9h4v6h-4M10 12h4" />
+        </svg>
+        API
+      </a>
+      <a href="/logout">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path
+            d="M10 17H5a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h5M14 12h8M18 8l4 4-4 4"
+          />
+        </svg>
+        Out
+      </a>
+    </nav>
+
+    <script>
+      function makeid(length) {
+        var result = "";
+        var characters =
+          "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        var charactersLength = characters.length;
+        for (var i = 0; i < length; i++) {
+          result += characters.charAt(
+            Math.floor(Math.random() * charactersLength),
+          );
+        }
+        return result;
+      }
+
+      let currentId = "";
+
+      // Tab switching functionality
+      function showDepositMethod(method) {
+        document
+          .querySelectorAll(".deposit-method")
+          .forEach((el) => el.classList.add("hidden"));
+        document.querySelectorAll(".deposit-tab").forEach((tab) => {
+          tab.classList.remove("active", "binance");
+        });
+        document.getElementById(method + "-method").classList.remove("hidden");
+        const activeTab = document.getElementById(method + "-tab");
+        activeTab.classList.add("active");
+        if (method === "binance") {
+          activeTab.classList.add("binance");
+        }
+      }
+
+      const TX_SERVICES = {
+        hotmailtrust: { logo: "#logo-hotmail", label: "hotmailtrust" },
+        outlooktrust: { logo: "#logo-outlook", label: "outlooktrust" },
+        hotmailnew: { logo: "#logo-hotmail", label: "hotmailnew" },
+        outlooknew: { logo: "#logo-outlook", label: "outlooknew" },
+        facebook: { logo: "#logo-facebook", label: "facebook" },
+        novery_kh: { logo: "#logo-novery", label: "novery_kh" },
+        novery_us: { logo: "#logo-novery", label: "novery_us" },
+      };
+
+      function initBalanceTxTypes() {
+        document.querySelectorAll("[data-tx-row]").forEach((row) => {
+          let type = (row.dataset.txType || "").toLowerCase().trim();
+          const note = (row.dataset.txNote || "").toLowerCase();
+
+          if (!TX_SERVICES[type]) {
+            for (const key of Object.keys(TX_SERVICES)) {
+              if (note.includes(key)) {
+                type = key;
+                break;
+              }
+            }
+          }
+
+          if (!TX_SERVICES[type]) return;
+
+          const cell = row.querySelector("[data-tx-type-cell]");
+          if (!cell) return;
+
+          const info = TX_SERVICES[type];
+          cell.innerHTML =
+            '<span class="badge badge-withdraw tx-type-badge">' +
+            '<svg class="tlogo" viewBox="0 0 48 48"><use href="' +
+            info.logo +
+            '"></use></svg>' +
+            info.label +
+            "</span>";
+        });
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        showDepositMethod("bakong");
+        initBalanceTxTypes();
+      });
+
+      function openKhqrOverlay() {
+        const overlay = document.getElementById("khqr-overlay");
+        overlay.classList.remove("hidden");
+        requestAnimationFrame(() => overlay.classList.add("open"));
+        document.body.style.overflow = "hidden";
+      }
+
+      function closeKhqrOverlay() {
+        const overlay = document.getElementById("khqr-overlay");
+        overlay.classList.remove("open");
+        setTimeout(() => {
+          overlay.classList.add("hidden");
+          document.body.style.overflow = "";
+        }, 220);
+      }
+
+      function showQR() {
+        const amount = document.getElementById("input_amount").value;
+        if (!amount || amount < 1) {
+          showNotification(
+            "error",
+            "Invalid Amount",
+            "Please enter a valid amount (minimum $1)",
+          );
+          return;
+        }
+
+        const loadingDiv = document.getElementById("khqr-loading");
+        const readyDiv = document.getElementById("khqr-ready");
+
+        loadingDiv.classList.remove("hidden");
+        readyDiv.classList.add("hidden");
+        openKhqrOverlay();
+
+        currentId = makeid(14);
+        document.getElementById("bank_qr").src =
+          "/bakong/bank_qr?amount=" + amount + "&id=" + currentId;
+        document.getElementById("khqr-amount").textContent =
+          Number(amount).toFixed(2);
+        document.getElementById("transaction_txt").textContent =
+          "Generating transaction " + currentId + "...";
+
+        setTimeout(() => {
+          loadingDiv.classList.add("hidden");
+          readyDiv.classList.remove("hidden");
+        }, 650);
+      }
+
+      document.addEventListener("keydown", function (e) {
+        if (e.key !== "Escape") return;
+        const khqr = document.getElementById("khqr-overlay");
+        if (khqr && !khqr.classList.contains("hidden")) {
+          closeKhqrOverlay();
+          return;
+        }
+        const bn = document.getElementById("bn-overlay");
+        if (bn && !bn.classList.contains("hidden")) {
+          closeBinanceCheckout();
+        }
+      });
+
+      async function checkPaymentManually() {
+        if (!currentId) {
+          showNotification(
+            "error",
+            "No Transaction",
+            "No active transaction to check",
+          );
+          return;
+        }
+        await check_payment();
+      }
+
+      async function check_payment() {
+        if (currentId === "") return;
+
+        try {
+          const response = await fetch("/payments?id=" + currentId);
+          if (!response.ok)
+            throw new Error(`HTTP error! status: ${response.status}`);
+          const data = await response.json();
+
+          if (data["isPaid"]) {
+            const c = currentId;
+            currentId = "";
+            showNotification(
+              "success",
+              "Payment Received!",
+              `Transaction ${c} completed successfully. Your balance will be updated.`,
+            );
+            setTimeout(() => location.reload(), 3000);
+          }
+        } catch (error) {
+          console.error("Error calling API:", error);
+          // showNotification('error', 'Payment check failed', 'Unable to verify payment status. Please try again.');
+        }
+      }
+
+      function copyTransactionId() {
+        if (!currentId) {
+          showNotification(
+            "error",
+            "No Reference",
+            "No transaction reference available",
+          );
+          return;
+        }
+        copyToClipboard(
+          currentId,
+          "Transaction reference copied to clipboard",
+          true,
+        );
+      }
+
+      function copyToClipboard(elementIdOrText, message, isText = false) {
+        const text = isText
+          ? elementIdOrText
+          : document.getElementById(elementIdOrText).textContent;
+        navigator.clipboard
+          .writeText(text)
+          .then(() => {
+            showNotification("success", "Copied!", message);
+          })
+          .catch((err) => {
+            console.error("Failed to copy: ", err);
+            showNotification(
+              "error",
+              "Copy failed",
+              "Could not copy to clipboard",
+            );
+          });
+      }
+
+      function openBinanceApp() {
+        const binanceAppUrl = "binance://";
+        const binanceWebUrl = "https://www.binance.com/";
+        window.location.href = binanceAppUrl;
+        setTimeout(() => window.open(binanceWebUrl, "_blank"), 1000);
+      }
+
+      function openBinanceCheckout() {
+        const amountEl = document.getElementById("binance_amount");
+        const amount = amountEl ? amountEl.value.trim() : "";
+        if (!amount || Number(amount) < 1) {
+          showNotification(
+            "error",
+            "Invalid Amount",
+            "Please enter a valid amount (minimum $1)",
+          );
+          return;
+        }
+        document.getElementById("bn-amount-display").textContent =
+          Number(amount).toFixed(2);
+        const overlay = document.getElementById("bn-overlay");
+        overlay.classList.remove("hidden");
+        requestAnimationFrame(() => overlay.classList.add("open"));
+        document.body.style.overflow = "hidden";
+        setTimeout(() => {
+          const orderEl = document.getElementById("binance_order_id");
+          if (orderEl) orderEl.focus();
+        }, 250);
+      }
+
+      function closeBinanceCheckout() {
+        const overlay = document.getElementById("bn-overlay");
+        overlay.classList.remove("open");
+        setTimeout(() => {
+          overlay.classList.add("hidden");
+          document.body.style.overflow = "";
+        }, 220);
+      }
+
+      async function checkBinancePayment() {
+        const orderEl = document.getElementById("binance_order_id");
+        const orderId = orderEl ? orderEl.value.trim() : "";
+
+        if (!orderId) {
+          showNotification(
+            "error",
+            "Missing Order ID",
+            "Paste your Binance Order ID from transfer history",
+          );
+          return;
+        }
+
+        const btn = document.getElementById("binance-check-btn");
+        const original = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = `<svg class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Checking...`;
+
+        try {
+          const response = await fetch(
+            "/binance/confirm_order?id=" + encodeURIComponent(orderId),
+          );
+
+          let data = null;
+          try {
+            data = await response.json();
+          } catch (e) {
+            data = null;
+          }
+
+          if (data && data.success === true) {
+            const paidAmount =
+              data.data && data.data.amount != null ? data.data.amount : "";
+            showNotification(
+              "success",
+              "Payment Received!",
+              paidAmount !== ""
+                ? "Credited $" + paidAmount + " USD. Balance will update shortly."
+                : "Your Binance deposit was verified. Balance will update shortly.",
+            );
+            setTimeout(() => location.reload(), 2500);
+            return;
+          }
+
+          const errMsg =
+            (data && (data.message || data.error)) ||
+            "order not found";
+          showNotification("error", "Payment check failed", errMsg);
+        } catch (error) {
+          console.error("Binance check error:", error);
+          showNotification(
+            "error",
+            "Payment check failed",
+            "Unable to verify payment. Please try again.",
+          );
+        } finally {
+          btn.innerHTML = original;
+          btn.disabled = false;
+        }
+      }
+
+      function showNotification(type, title, message) {
+        const notificationContainer =
+          document.getElementById("notification-container") ||
+          createNotificationContainer();
+        notificationContainer.style.zIndex = "200";
+
+        const colors = {
+          success: "border-green-500 bg-white dark:bg-slate-800",
+          error: "border-red-500 bg-white dark:bg-slate-800",
+          info: "border-blue-500 bg-white dark:bg-slate-800",
+        };
+        const iconColors = {
+          success: "text-green-500",
+          error: "text-red-500",
+          info: "text-blue-500",
+        };
+        const textColors = {
+          success: "text-green-800 dark:text-green-300",
+          error: "text-red-800 dark:text-red-300",
+          info: "text-blue-800 dark:text-blue-300",
+        };
+        const icons = {
+          success: "M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z",
+          error:
+            "M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z",
+          info: "M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z",
+        };
+
+        const notification = document.createElement("div");
+        notification.className = `p-4 rounded-lg shadow-lg border-l-4 w-full max-w-sm animate__animated animate__fadeInRight ${colors[type]}`;
+        notification.innerHTML = `
+          <div class="flex items-start">
+            <svg class="h-6 w-6 ${iconColors[type]} mr-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${icons[type]}" />
+            </svg>
+            <div>
+              <h4 class="font-medium ${textColors[type]}">${title}</h4>
+              <p class="text-sm text-slate-600 dark:text-slate-300">${message}</p>
+            </div>
+          </div>`;
+
+        notificationContainer.appendChild(notification);
+
+        setTimeout(() => {
+          notification.classList.remove("animate__fadeInRight");
+          notification.classList.add("animate__fadeOutRight");
+          setTimeout(() => notification.remove(), 500);
+        }, 3000);
+      }
+
+      function createNotificationContainer() {
+        let container = document.createElement("div");
+        container.id = "notification-container";
+        container.className = "fixed top-4 right-4 space-y-3";
+        container.style.zIndex = "200";
+        document.body.appendChild(container);
+        return container;
+      }
+
+      setInterval(check_payment, 5000);
+    </script>
+  </body>
+</html>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

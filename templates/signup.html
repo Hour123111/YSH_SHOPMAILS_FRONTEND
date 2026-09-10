@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{.Title}} - Create Account | YSHSHOPMAILS</title>
+    <meta
+      name="description"
+      content="Create your YSHSHOPMAILS account to buy verified OTP mailboxes and fresh email accounts with instant delivery and secure payments."
+    />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#0f766e" />
+    <link rel="canonical" href="https://yshshopmails.com/register" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="YSHSHOPMAILS" />
+    <meta property="og:url" content="https://yshshopmails.com/register" />
+    <meta property="og:title" content="Create your YSHSHOPMAILS account" />
+    <meta
+      property="og:description"
+      content="Buy verified OTP mailboxes and fresh email accounts with instant delivery and secure payments."
+    />
+    <meta
+      property="og:image"
+      content="https://yshshopmails.com/static/img/yshshopmails-logo.png"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="/static/js/config.js"></script>
+    <link rel="icon" href="/static/img/yshshopmails-logo.png" type="image/png" />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/static/css/app.css" />
+    <script defer src="/static/js/ui.js"></script>
+  </head>
+  <body class="app-body auth-page font-sans">
+    <div class="auth-shell">
+      <div class="panel auth-card rise-in">
+        <div class="text-center mb-8">
+          <div class="brand-mark mx-auto mb-4" style="width: 3.25rem; height: 3.25rem">
+            <img src="/static/img/yshshopmails-logo.png" alt="YSHSHOPMAILS" />
+          </div>
+          <p class="text-xs font-semibold tracking-[0.18em] uppercase text-teal-700 dark:text-teal-300 mb-2">
+            YSHSHOPMAILS
+          </p>
+          <h1 class="font-display text-2xl sm:text-3xl font-bold gradient-text mb-2">{{.Title}}</h1>
+          <p class="text-slate-600 dark:text-slate-300 text-sm sm:text-base">
+            Create your account to get started
+          </p>
+        </div>
+
+        {{if .Error}}
+        <div
+          class="bg-red-50 dark:bg-red-500/15 border border-red-200 dark:border-red-500/30 text-red-700 dark:text-red-200 p-4 rounded-xl mb-6 text-sm"
+        >
+          <div class="flex items-start gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 flex-shrink-0 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+            </svg>
+            <div>{{.Error}}</div>
+          </div>
+        </div>
+        {{end}} {{if .Message}}
+        <div
+          class="bg-emerald-50 dark:bg-emerald-500/15 border border-emerald-200 dark:border-emerald-500/30 text-emerald-700 dark:text-emerald-200 p-4 rounded-xl mb-6 text-sm"
+        >
+          <div class="flex items-start gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 flex-shrink-0 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+            </svg>
+            <div>{{.Message}}</div>
+          </div>
+        </div>
+        {{else}}
+        <form method="POST" class="space-y-5">
+          <div>
+            <label for="email" class="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-2">
+              Email Address
+            </label>
+            <input
+              name="email"
+              type="email"
+              required
+              class="input-field"
+              placeholder="Enter your email"
+            />
+          </div>
+
+          <div>
+            <label for="password" class="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-2">
+              Password
+            </label>
+            <div class="relative">
+              <input
+                id="password"
+                name="password"
+                type="password"
+                required
+                minlength="6"
+                class="input-field pr-12"
+                placeholder="Create a password"
+              />
+              <button
+                type="button"
+                onclick="togglePasswordVisibility('password', 'eye-open', 'eye-closed')"
+                class="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-teal-700 dark:hover:text-teal-300 focus:outline-none"
+                aria-label="Toggle password visibility"
+              >
+                <svg
+                  id="eye-open"
+                  class="h-5 w-5"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                </svg>
+                <svg
+                  id="eye-closed"
+                  class="h-5 w-5 hidden"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <label for="confirm_password" class="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-2">
+              Confirm Password
+            </label>
+            <div class="relative">
+              <input
+                id="confirm_password"
+                name="confirm_password"
+                type="password"
+                required
+                minlength="6"
+                class="input-field pr-12"
+                placeholder="Re-enter your password"
+              />
+              <button
+                type="button"
+                onclick="togglePasswordVisibility('confirm_password', 'eye-open-2', 'eye-closed-2')"
+                class="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-teal-700 dark:hover:text-teal-300 focus:outline-none"
+                aria-label="Toggle confirm password visibility"
+              >
+                <svg
+                  id="eye-open-2"
+                  class="h-5 w-5"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                </svg>
+                <svg
+                  id="eye-closed-2"
+                  class="h-5 w-5 hidden"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                </svg>
+              </button>
+            </div>
+            <p id="pw-mismatch" class="mt-2 text-sm text-red-600 dark:text-red-400 hidden">
+              Passwords do not match.
+            </p>
+          </div>
+
+          <button type="submit" class="btn-primary w-full py-3 px-4 text-white">
+            Create Account
+          </button>
+        </form>
+        {{end}}
+
+        <div class="mt-8 text-center text-sm text-slate-500 dark:text-slate-400">
+          Already have an account?
+          <a href="/login" class="font-medium text-teal-700 dark:text-teal-300 hover:underline">Sign in</a>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function togglePasswordVisibility(inputId, eyeOpenId, eyeClosedId) {
+        const passwordInput = document.getElementById(inputId);
+        const eyeOpen = document.getElementById(eyeOpenId);
+        const eyeClosed = document.getElementById(eyeClosedId);
+
+        if (passwordInput.type === "password") {
+          passwordInput.type = "text";
+          eyeOpen.classList.add("hidden");
+          eyeClosed.classList.remove("hidden");
+        } else {
+          passwordInput.type = "password";
+          eyeOpen.classList.remove("hidden");
+          eyeClosed.classList.add("hidden");
+        }
+      }
+
+      (function () {
+        const form = document.querySelector("form");
+        const pw = document.getElementById("password");
+        const confirm = document.getElementById("confirm_password");
+        const mismatch = document.getElementById("pw-mismatch");
+        if (!form || !pw || !confirm) return;
+
+        function validateMatch() {
+          if (confirm.value && pw.value !== confirm.value) {
+            confirm.setCustomValidity("Passwords do not match");
+            mismatch.classList.remove("hidden");
+            return false;
+          }
+          confirm.setCustomValidity("");
+          mismatch.classList.add("hidden");
+          return true;
+        }
+
+        pw.addEventListener("input", validateMatch);
+        confirm.addEventListener("input", validateMatch);
+        form.addEventListener("submit", function (e) {
+          if (!validateMatch()) {
+            e.preventDefault();
+            confirm.focus();
+          }
+        });
+      })();
+    </script>
+  </body>
+</html>

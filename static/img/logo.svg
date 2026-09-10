@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none" role="img" aria-label="YSH Shop Mails">
+  <defs>
+    <linearGradient id="yshGrad" x1="16" y1="12" x2="112" y2="116" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0F766E"/>
+      <stop offset="0.55" stop-color="#059669"/>
+      <stop offset="1" stop-color="#D97706"/>
+    </linearGradient>
+  </defs>
+  <rect width="128" height="128" rx="28" fill="url(#yshGrad)"/>
+  <path d="M28 44c0-5.523 4.477-10 10-10h52c5.523 0 10 4.477 10 10v40c0 5.523-4.477 10-10 10H38c-5.523 0-10-4.477-10-10V44z" fill="#fff" fill-opacity=".95"/>
+  <path d="M32 48l32 22 32-22" stroke="#0F766E" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M46 78l10-8 8 6 18-16" stroke="#D97706" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

@@ -1,0 +1,24 @@
+# Local testing / preview (do not push)
+preview_server.py
+start.bat
+_repo_tmp/
+_local_backup/
+
+# Archives / local bundles
+*.rar
+*.zip
+
+# Root copies (repo uses static/robots.txt and static/sitemap.xml)
+/robots.txt
+/sitemap.xml
+
+# Editor / OS
+.cursor/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo

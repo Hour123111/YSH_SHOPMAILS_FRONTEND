@@ -220,8 +220,11 @@
     const els = [];
     document.querySelectorAll(selector).forEach((el) => {
       if (seen.has(el)) return;
-      // skip if it's nested inside another already-revealing element
-      if (el.closest(".reveal")) return;
+      // skip nested inside another reveal target (not the element itself)
+      const parentReveal = el.parentElement
+        ? el.parentElement.closest(".reveal")
+        : null;
+      if (parentReveal) return;
       seen.add(el);
       els.push(el);
     });

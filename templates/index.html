@@ -90,10 +90,14 @@
       href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="/static/css/app.css?v=20250908" />
+    <link rel="stylesheet" href="/static/css/app.css?v=20250908b" />
     <style>
       /* Partner Stores – keeps layout correct even if app.css on server is old */
-      .partners { margin-top: 0.5rem; }
+      .partners {
+        margin-top: 0.5rem;
+        opacity: 1 !important;
+        transform: none !important;
+      }
       .partner-grid {
         display: grid;
         grid-template-columns: 1fr;
@@ -216,7 +220,7 @@
       .dark .partner-card.partner-social .partner-link { color: #fbbf24; }
       .partner-link::after { content: "→"; transition: transform 0.15s ease; }
     </style>
-    <script defer src="/static/js/ui.js"></script>
+    <script defer src="/static/js/ui.js?v=20250908b"></script>
   </head>
   <body class="app-body has-support-bar flex flex-col min-h-screen font-sans">
     <header class="app-header">
@@ -634,7 +638,7 @@
       </div>
 
       <!-- Partnerships -->
-      <section class="partners reveal">
+      <section class="partners">
         <div class="section-head">
           <span class="eyebrow-pill"
             ><span class="dot"></span> Our partners</span

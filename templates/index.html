@@ -90,135 +90,33 @@
       href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="/static/css/app.css?v=20250908b" />
+    <link rel="stylesheet" href="/static/css/app.css?v=20250910" />
     <style>
-      /* Partner Stores – keeps layout correct even if app.css on server is old */
-      .partners {
-        margin-top: 0.5rem;
-        opacity: 1 !important;
-        transform: none !important;
-      }
-      .partner-grid {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 1rem;
-      }
-      @media (min-width: 768px) {
-        .partner-grid { grid-template-columns: 1fr 1fr; gap: 1.15rem; }
-      }
-      .partner-card {
-        position: relative;
-        display: flex;
-        flex-direction: column;
-        gap: 0.55rem;
-        padding: 1.25rem 1.2rem 1.15rem;
-        border-radius: 1.2rem;
-        border: 1px solid var(--line);
-        background: linear-gradient(180deg, var(--panel), var(--panel-2));
-        text-decoration: none;
-        color: inherit;
-        overflow: hidden;
-        box-shadow: 0 18px 40px -30px rgba(15, 30, 40, 0.5);
-        transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease, box-shadow 0.35s ease;
-      }
-      .partner-card .partner-shine {
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(105deg, transparent 40%, rgba(255, 255, 255, 0.12) 50%, transparent 60%);
-        transform: translateX(-120%);
-        transition: transform 0.6s ease;
-        pointer-events: none;
-        z-index: 2;
-      }
-      .partner-card::before {
-        content: "";
-        position: absolute;
-        inset: 0 0 auto 0;
-        height: 3px;
-        opacity: 0.95;
-      }
-      .partner-card.partner-sms::before { background: linear-gradient(90deg, #0ea5e9, #14b8a6); }
-      .partner-card.partner-social::before { background: linear-gradient(90deg, #f59e0b, #ef4444); }
-      .partner-card::after {
-        content: "";
-        position: absolute;
-        width: 11rem;
-        height: 11rem;
-        border-radius: 999px;
-        top: -4rem;
-        right: -3.5rem;
-        filter: blur(28px);
-        opacity: 0.35;
-        pointer-events: none;
-        transition: opacity 0.35s ease, transform 0.35s ease;
-      }
-      .partner-card.partner-sms::after { background: radial-gradient(circle, rgba(14, 165, 233, 0.55), transparent 70%); }
-      .partner-card.partner-social::after { background: radial-gradient(circle, rgba(245, 158, 11, 0.5), transparent 70%); }
-      @media (hover: hover) {
-        .partner-card:hover { transform: translateY(-6px) scale(1.01); box-shadow: 0 28px 56px -24px rgba(15, 30, 40, 0.45); }
-        .partner-card.partner-sms:hover { border-color: rgba(14, 165, 233, 0.45); box-shadow: 0 28px 56px -22px rgba(14, 165, 233, 0.35); }
-        .partner-card.partner-social:hover { border-color: rgba(245, 158, 11, 0.45); box-shadow: 0 28px 56px -22px rgba(245, 158, 11, 0.32); }
-        .partner-card:hover .partner-shine { transform: translateX(120%); }
-        .partner-card:hover::after { opacity: 0.55; transform: scale(1.08); }
-        .partner-card:hover .partner-go { transform: rotate(45deg) scale(1.08); background: var(--brand); color: #fff; border-color: transparent; }
-        .partner-card.partner-social:hover .partner-go { background: #d97706; }
-        .partner-card:hover .partner-mark { animation-play-state: paused; transform: translateY(-3px) scale(1.06); }
-        .partner-card:hover .partner-mark-ring { opacity: 0.85; transform: scale(1.15); }
-        .partner-card:hover .partner-link::after { transform: translateX(3px); }
-      }
-      .partner-top { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; position: relative; z-index: 1; }
-      .partner-eyebrow { font-size: 0.68rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
-      .partner-go {
-        width: 1.7rem; height: 1.7rem; border-radius: 999px; display: grid; place-items: center;
-        font-size: 0.85rem; font-weight: 700; color: var(--ink);
-        background: rgba(15, 30, 40, 0.06); border: 1px solid var(--line);
-        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), background 0.25s ease, color 0.25s ease, border-color 0.25s ease;
-      }
-      .dark .partner-go { background: rgba(255, 255, 255, 0.06); }
-      .partner-mark {
-        position: relative; z-index: 1; width: 3.75rem; height: 3.75rem; flex-shrink: 0;
-        border-radius: 1rem; display: grid; place-items: center; margin-top: 0.15rem;
-        box-shadow: 0 14px 28px -14px rgba(0, 0, 0, 0.5);
-        animation: partnerFloat 4s ease-in-out infinite;
-        transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-      }
-      .partner-mark-ring {
-        position: absolute; inset: -4px; border-radius: 1.15rem;
-        border: 2px solid rgba(255, 255, 255, 0.35); opacity: 0.4;
-        animation: partnerPulse 2.8s ease-in-out infinite;
-        transition: opacity 0.3s ease, transform 0.35s ease; pointer-events: none;
-      }
-      .partner-mark svg { width: 100%; height: 100%; max-width: 3rem; max-height: 3rem; padding: 0.35rem; filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15)); }
-      .partner-mark.sms { background: linear-gradient(145deg, #38bdf8 0%, #0ea5e9 40%, #0d9488 100%); }
-      .partner-mark.social { background: linear-gradient(145deg, #fcd34d 0%, #f59e0b 45%, #ea580c 100%); }
-      .partner-card:nth-child(2) .partner-mark { animation-delay: -2s; }
-      .partner-card:nth-child(2) .partner-mark-ring { animation-delay: -1.4s; }
-      .partner-icon-bubble { animation: partnerBubble 2.5s ease-in-out infinite; transform-origin: 45px 27px; }
-      .partner-icon-badge.fb { animation: partnerBadgePop 3s ease-in-out infinite; }
-      .partner-icon-badge.ig { animation: partnerBadgePop 3s ease-in-out infinite 0.4s; }
-      .partner-icon-check {
-        stroke-dasharray: 12; stroke-dashoffset: 12;
-        animation: partnerCheckDraw 2s ease forwards 0.5s, partnerCheckPulse 3s ease-in-out infinite 2.5s;
-      }
-      @keyframes partnerFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
-      @keyframes partnerPulse { 0%, 100% { opacity: 0.35; transform: scale(1); } 50% { opacity: 0.65; transform: scale(1.06); } }
-      @keyframes partnerBubble { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.06); opacity: 0.95; } }
-      @keyframes partnerBadgePop { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
-      @keyframes partnerCheckDraw { to { stroke-dashoffset: 0; } }
-      @keyframes partnerCheckPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.65; } }
-      .partner-card h3 {
-        position: relative; z-index: 1; margin: 0.15rem 0 0;
-        font-family: "Space Grotesk", "Manrope", sans-serif; font-weight: 800;
-        font-size: 1.08rem; letter-spacing: 0.01em; color: var(--ink); line-height: 1.2;
-      }
-      .partner-card p { position: relative; z-index: 1; margin: 0; font-size: 0.86rem; line-height: 1.5; color: var(--muted); flex: 1; }
-      .partner-link {
-        position: relative; z-index: 1; margin-top: 0.55rem; display: inline-flex;
-        align-items: center; gap: 0.35rem; font-size: 0.82rem; font-weight: 800; color: var(--brand);
-      }
-      .partner-card.partner-social .partner-link { color: #d97706; }
-      .dark .partner-card.partner-social .partner-link { color: #fbbf24; }
-      .partner-link::after { content: "→"; transition: transform 0.15s ease; }
+      /* Partner Stores fallback – matches app.css if server cache is old */
+      .partners { margin-top: 0.5rem; opacity: 1 !important; transform: none !important; }
+      .partners-head { text-align: center; max-width: 42rem; margin: 0 auto 1.35rem; }
+      .partners-title { margin: 0; font-family: "Space Grotesk", "Manrope", sans-serif; font-size: clamp(1.45rem, 3.5vw, 2rem); font-weight: 800; line-height: 1.15; color: var(--ink); }
+      .partners-title .accent { color: #f97316; }
+      .partners-sub { margin: 0.65rem auto 0; max-width: 36rem; font-size: 0.88rem; line-height: 1.55; color: var(--muted); }
+      .partner-grid { display: grid; grid-template-columns: 1fr; gap: 0.9rem; }
+      @media (min-width: 768px) { .partner-grid { grid-template-columns: 1fr 1fr; gap: 1rem; } }
+      .partner-card { position: relative; display: flex; flex-direction: column; gap: 0.45rem; padding: 1.15rem; border-radius: 1rem; border: 1px solid var(--line); background: var(--panel); text-decoration: none; color: inherit; overflow: hidden; }
+      .partner-card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.75rem; }
+      .partner-icon { width: 2.75rem; height: 2.75rem; border-radius: 0.75rem; display: grid; place-items: center; flex-shrink: 0; color: #fff; }
+      .partner-icon svg { width: 1.35rem; height: 1.35rem; }
+      .partner-icon.social { background: linear-gradient(145deg, #a78bfa, #7c3aed); }
+      .partner-icon.phone { background: linear-gradient(145deg, #38bdf8, #0d9488); }
+      .partner-icon.captcha { background: linear-gradient(145deg, #4ade80, #16a34a); }
+      .partner-icon.topup { background: linear-gradient(145deg, #fdba74, #ea580c); }
+      .partner-ext { width: 1.65rem; height: 1.65rem; border-radius: 0.45rem; display: grid; place-items: center; color: var(--muted); border: 1px solid var(--line); }
+      .partner-ext svg { width: 0.85rem; height: 0.85rem; }
+      .partner-cat { font-size: 0.62rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+      .partner-card h3 { margin: 0; font-family: "Space Grotesk", "Manrope", sans-serif; font-weight: 800; font-size: 1.02rem; color: var(--ink); }
+      .partner-card p { margin: 0; font-size: 0.82rem; line-height: 1.55; color: var(--muted); flex: 1; }
+      .partner-tags { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.15rem; }
+      .partner-tags span { padding: 0.28rem 0.55rem; border-radius: 999px; font-size: 0.68rem; font-weight: 700; color: var(--muted); border: 1px solid var(--line); }
+      .partner-link { margin-top: 0.45rem; display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.8rem; font-weight: 800; color: #f97316; }
+      .partner-link::after { content: "→"; }
     </style>
     <script defer src="/static/js/ui.js?v=20250908b"></script>
   </head>
@@ -637,116 +535,23 @@
         </section>
       </div>
 
-      <!-- Partnerships -->
+      <!-- Partner Stores -->
       <section class="partners">
-        <div class="section-head">
+        <div class="partners-head">
           <span class="eyebrow-pill"
-            ><span class="dot"></span> Our partners</span
+            ><span class="dot"></span> Partner Stores</span
           >
-          <h2 class="cool-title" style="justify-content: center">
-            Partner Stores
+          <h2 class="partners-title">
+            Trusted tools from the
+            <span class="accent">YSHSHOPMAILS ecosystem</span>
           </h2>
+          <p class="partners-sub">
+            Phone SMS, social accounts, captcha API, and game top-ups — trusted
+            partner stores in the YSHSHOPMAILS ecosystem.
+          </p>
         </div>
 
         <div class="partner-grid">
-          <a
-            href="https://angkorphonesms.shop/"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="partner-card partner-sms"
-          >
-            <span class="partner-shine" aria-hidden="true"></span>
-            <div class="partner-top">
-              <span class="partner-eyebrow">Our Phone SMS Store</span>
-              <span class="partner-go" aria-hidden="true">↗</span>
-            </div>
-            <div class="partner-mark sms">
-              <span class="partner-mark-ring"></span>
-              <svg viewBox="0 0 64 64" fill="none" aria-hidden="true">
-                <defs>
-                  <linearGradient id="sms-phone" x1="18" y1="8" x2="46" y2="56">
-                    <stop offset="0" stop-color="#ffffff" />
-                    <stop offset="1" stop-color="#e0f2fe" />
-                  </linearGradient>
-                  <linearGradient
-                    id="sms-screen"
-                    x1="24"
-                    y1="18"
-                    x2="40"
-                    y2="44"
-                  >
-                    <stop offset="0" stop-color="#0ea5e9" />
-                    <stop offset="1" stop-color="#0f766e" />
-                  </linearGradient>
-                </defs>
-                <rect
-                  x="20"
-                  y="8"
-                  width="24"
-                  height="48"
-                  rx="5"
-                  fill="url(#sms-phone)"
-                  stroke="rgba(255,255,255,0.5)"
-                  stroke-width="1.2"
-                />
-                <rect
-                  x="23"
-                  y="14"
-                  width="18"
-                  height="32"
-                  rx="2.5"
-                  fill="url(#sms-screen)"
-                />
-                <rect
-                  x="28"
-                  y="48"
-                  width="8"
-                  height="2.5"
-                  rx="1.2"
-                  fill="rgba(255,255,255,0.85)"
-                />
-                <g class="partner-icon-bubble">
-                  <rect
-                    x="34"
-                    y="20"
-                    width="22"
-                    height="14"
-                    rx="4"
-                    fill="#fff"
-                    stroke="#bae6fd"
-                    stroke-width="1"
-                  />
-                  <path
-                    d="M38 34 L42 38 L42 34 Z"
-                    fill="#fff"
-                    stroke="#bae6fd"
-                    stroke-width="1"
-                  />
-                  <text
-                    x="45"
-                    y="30"
-                    text-anchor="middle"
-                    fill="#0f766e"
-                    font-size="7"
-                    font-weight="800"
-                    font-family="Space Grotesk, sans-serif"
-                  >
-                    OTP
-                  </text>
-                </g>
-                <circle cx="26" cy="22" r="1.2" fill="#fff" opacity="0.9" />
-                <circle cx="30" cy="26" r="1" fill="#fff" opacity="0.6" />
-                <circle cx="26" cy="30" r="0.8" fill="#fff" opacity="0.45" />
-              </svg>
-            </div>
-            <h3>ANGKOR PHONE SMS</h3>
-            <p>
-              US numbers for Facebook, Instagram, and more — fast OTP for
-              registration and verification.
-            </p>
-            <span class="partner-link">Visit store</span>
-          </a>
-
           <a
             href="https://yshsocialaccounts.shop/"
             target="_blank"
@@ -754,107 +559,138 @@
             class="partner-card partner-social"
           >
             <span class="partner-shine" aria-hidden="true"></span>
-            <div class="partner-top">
-              <span class="partner-eyebrow">Social accounts hub</span>
-              <span class="partner-go" aria-hidden="true">↗</span>
+            <div class="partner-card-head">
+              <div class="partner-icon social">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <circle cx="9" cy="8" r="3" />
+                  <circle cx="17" cy="9" r="2.5" />
+                  <path d="M3 19c.8-3.2 3.2-5 6-5s5.2 1.8 6 5" />
+                  <path d="M14 19c.3-1.8 1.5-3 3.5-3" />
+                </svg>
+              </div>
+              <span class="partner-ext" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M14 3h7v7M10 14 21 3M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                </svg>
+              </span>
             </div>
-            <div class="partner-mark social">
-              <span class="partner-mark-ring"></span>
-              <svg viewBox="0 0 64 64" fill="none" aria-hidden="true">
-                <defs>
-                  <linearGradient
-                    id="social-bg"
-                    x1="12"
-                    y1="12"
-                    x2="52"
-                    y2="52"
-                  >
-                    <stop offset="0" stop-color="#fff7ed" />
-                    <stop offset="1" stop-color="#ffedd5" />
-                  </linearGradient>
-                  <linearGradient
-                    id="social-badge"
-                    x1="8"
-                    y1="8"
-                    x2="24"
-                    y2="24"
-                  >
-                    <stop offset="0" stop-color="#3b82f6" />
-                    <stop offset="1" stop-color="#1d4ed8" />
-                  </linearGradient>
-                  <linearGradient
-                    id="social-badge2"
-                    x1="40"
-                    y1="8"
-                    x2="56"
-                    y2="24"
-                  >
-                    <stop offset="0" stop-color="#f472b6" />
-                    <stop offset="1" stop-color="#db2777" />
-                  </linearGradient>
-                </defs>
-                <circle
-                  cx="32"
-                  cy="34"
-                  r="18"
-                  fill="url(#social-bg)"
-                  stroke="rgba(255,255,255,0.6)"
-                  stroke-width="1.2"
-                />
-                <circle
-                  cx="32"
-                  cy="28"
-                  r="7"
-                  fill="#fff"
-                  stroke="#fdba74"
-                  stroke-width="1.2"
-                />
-                <path
-                  d="M20 46c1.8-5.5 5.5-8.5 12-8.5s10.2 3 12 8.5"
-                  stroke="#ea580c"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  fill="none"
-                />
-                <g class="partner-icon-badge fb">
-                  <circle cx="16" cy="18" r="8" fill="url(#social-badge)" />
-                  <path
-                    d="M16 14v8M13.5 16h5"
-                    stroke="#fff"
-                    stroke-width="1.8"
-                    stroke-linecap="round"
-                  />
-                </g>
-                <g class="partner-icon-badge ig">
-                  <circle cx="48" cy="18" r="8" fill="url(#social-badge2)" />
-                  <rect
-                    x="44"
-                    y="14"
-                    width="8"
-                    height="8"
-                    rx="2.2"
-                    stroke="#fff"
-                    stroke-width="1.6"
-                    fill="none"
-                  />
-                  <circle cx="52" cy="14" r="1.2" fill="#fff" />
-                </g>
-                <path
-                  class="partner-icon-check"
-                  d="M38 38l2.5 2.5 5-6"
-                  stroke="#16a34a"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-            </div>
-            <h3>YSH SOCIAL ACCOUNTS</h3>
+            <span class="partner-cat">Social Accounts</span>
+            <h3>YSH Social Accounts</h3>
             <p>
-              Your trusted hub for social accounts. Premium verified accounts,
-              fast checkout, and secure top-ups — built for resellers and power
-              users.
+              Buy verified social media accounts at YSH Social Accounts. Premium
+              Facebook, Instagram, and platform profiles with fast checkout,
+              secure delivery, and stock for resellers.
             </p>
+            <div class="partner-tags">
+              <span>Facebook</span>
+              <span>Instagram</span>
+              <span>Reseller stock</span>
+            </div>
+            <span class="partner-link">Visit store</span>
+          </a>
+
+          <a
+            href="https://angkorphonesms.shop/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="partner-card partner-phone"
+          >
+            <span class="partner-shine" aria-hidden="true"></span>
+            <div class="partner-card-head">
+              <div class="partner-icon phone">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <rect x="7" y="2.5" width="10" height="19" rx="2.2" />
+                  <path d="M11 18.5h2" />
+                </svg>
+              </div>
+              <span class="partner-ext" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M14 3h7v7M10 14 21 3M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                </svg>
+              </span>
+            </div>
+            <span class="partner-cat">Phone SMS</span>
+            <h3>AngkorPhoneSMS</h3>
+            <p>
+              Rent US phone numbers for SMS OTP on angkorphonesms.shop. Fast
+              numbers for Facebook, Instagram, Telegram, and more — receive codes
+              in seconds with simple checkout and stable stock.
+            </p>
+            <div class="partner-tags">
+              <span>US numbers</span>
+              <span>SMS OTP</span>
+              <span>FB &amp; IG ready</span>
+            </div>
+            <span class="partner-link">Visit store</span>
+          </a>
+
+          <a
+            href="https://captcha.yshshopmails.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="partner-card partner-captcha"
+          >
+            <span class="partner-shine" aria-hidden="true"></span>
+            <div class="partner-card-head">
+              <div class="partner-icon captcha">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <path d="M12 2a3 3 0 0 0-3 3v1H8a2 2 0 0 0-2 2v1H5a3 3 0 0 0 0 6h1v1a2 2 0 0 0 2 2h1v1a3 3 0 0 0 6 0v-1h1a2 2 0 0 0 2-2v-1h1a3 3 0 0 0 0-6h-1V8a2 2 0 0 0-2-2h-1V5a3 3 0 0 0-3-3z" />
+                </svg>
+              </div>
+              <span class="partner-ext" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M14 3h7v7M10 14 21 3M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                </svg>
+              </span>
+            </div>
+            <span class="partner-cat">Captcha API</span>
+            <h3>YSH Captcha</h3>
+            <p>
+              AI captcha solving from YSH Captcha. High-speed API for Google
+              reCAPTCHA, Cloudflare Turnstile, and hCaptcha — built for bots,
+              tools, and high-volume automation.
+            </p>
+            <div class="partner-tags">
+              <span>reCAPTCHA</span>
+              <span>Turnstile</span>
+              <span>hCaptcha</span>
+            </div>
+            <span class="partner-link">Visit store</span>
+          </a>
+
+          <a
+            href="https://yshtopup.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="partner-card partner-topup"
+          >
+            <span class="partner-shine" aria-hidden="true"></span>
+            <div class="partner-card-head">
+              <div class="partner-icon topup">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <path d="M6 11h4M8 9v4" />
+                  <path d="M15 12h.01M18 10h.01" />
+                  <path d="M6 8h12a4 4 0 0 1 4 4v1a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5v-1a4 4 0 0 1 4-4z" />
+                </svg>
+              </div>
+              <span class="partner-ext" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M14 3h7v7M10 14 21 3M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                </svg>
+              </span>
+            </div>
+            <span class="partner-cat">Game Top-Up</span>
+            <h3>YSH Topup</h3>
+            <p>
+              Game top-up from YSH Topup — Mobile Legends diamonds, Free Fire
+              diamonds, and PUBG UC for Cambodia. Fast delivery with local
+              payment options and stable stock.
+            </p>
+            <div class="partner-tags">
+              <span>Mobile Legends</span>
+              <span>Free Fire</span>
+              <span>PUBG UC</span>
+            </div>
             <span class="partner-link">Visit store</span>
           </a>
         </div>

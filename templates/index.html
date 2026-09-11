@@ -133,12 +133,15 @@
             >
               YSHSHOPMAILS
             </div>
+            {{if .User}}
             <div class="text-[0.72rem] sm:text-xs text-[var(--muted)]">
-              Balance <b class="text-[var(--brand)]">${{ .Balance }}</b>
+              Balance <b class="text-[var(--brand)]">${{ User.BalanceUSD }}</b>
             </div>
+            {{end}}
           </div>
         </a>
         <nav class="ml-auto hidden md:flex items-center gap-1">
+          {{if .User}}
           <a href="/" class="nav-link active">Home</a>
           <a href="/api" class="nav-link">API</a>
           <a
@@ -151,6 +154,9 @@
           <a href="/orders" class="nav-link">Orders</a>
           <a href="/balance" class="nav-link">Balance</a>
           <a href="/logout" class="nav-link">Logout</a>
+          {{else}}
+          <a href="/login" class="nav-link">Login</a>
+          {{end}}
           <button
             onclick="toggleTheme()"
             class="nav-link"

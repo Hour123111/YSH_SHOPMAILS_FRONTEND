@@ -1,8 +1,7 @@
 User-agent: *
-Allow: /$
-Allow: /api
-Allow: /register
-Allow: /login
+Allow: /
+
+Disallow: /orders
 Disallow: /order
 Disallow: /balance
 Disallow: /admin
@@ -10,6 +9,7 @@ Disallow: /logout
 Disallow: /activate
 Disallow: /reset
 Disallow: /forgot
+Disallow: /login
 Disallow: /v1/
 Disallow: /v2/
 

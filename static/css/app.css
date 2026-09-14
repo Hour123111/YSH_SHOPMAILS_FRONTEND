@@ -2306,9 +2306,14 @@ body.app-body::before {
   border-radius: 0.6rem;
   background: linear-gradient(135deg, #ff8a3c, var(--accent-hot));
   box-shadow: 0 10px 20px -12px rgba(255, 106, 26, 0.8);
+  text-decoration: none;
   transition:
     transform 0.15s ease,
     filter 0.15s ease;
+}
+a.svc-new:hover {
+  color: #111;
+  text-decoration: none;
 }
 .svc-new:hover {
   transform: translateY(-1px);

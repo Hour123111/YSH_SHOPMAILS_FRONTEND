@@ -26,7 +26,7 @@
       href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="/static/css/app.css?v=20250911" />
+    <link rel="stylesheet" href="/static/css/app.css?v=20250917" />
     <script defer src="/static/js/ui.js"></script>
     <link
       rel="stylesheet"
@@ -501,6 +501,63 @@
         }
       });
 
+      function applyServicePrice(priceElement, price) {
+        if (!priceElement) return;
+        const n = Number(price);
+        if (!Number.isFinite(n)) return;
+        priceElement.textContent = n.toFixed(3);
+      }
+
+      function loadServicePrice(service, priceId) {
+        const priceElement = document.getElementById(priceId);
+        if (!priceElement) return;
+
+        fetch("/v1/stock?service=" + encodeURIComponent(service))
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("HTTP error! status: " + response.status);
+            }
+            return response.json();
+          })
+          .then((data) => {
+            if (data.status !== "success" || data.price == null) {
+              throw new Error("Invalid price response");
+            }
+            applyServicePrice(priceElement, data.price);
+          })
+          .catch((error) => {
+            console.error("load price error (" + service + "):", error);
+          });
+      }
+
+      function loadServiceStock(service, stockId, priceId) {
+        const stockElement = document.getElementById(stockId);
+        const priceElement = priceId ? document.getElementById(priceId) : null;
+        if (!stockElement && !priceElement) return;
+
+        fetch("/v1/stock?service=" + encodeURIComponent(service))
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("HTTP error! status: " + response.status);
+            }
+            return response.json();
+          })
+          .then((data) => {
+            if (data.status !== "success") {
+              throw new Error("Invalid stock response");
+            }
+            if (stockElement && data.stock != null) {
+              applyStockLevel(stockElement, data.stock);
+            }
+            if (priceElement && data.price != null) {
+              applyServicePrice(priceElement, data.price);
+            }
+          })
+          .catch((error) => {
+            console.error("load stock error (" + service + "):", error);
+          });
+      }
+
       function applyStockLevel(stockElement, stock) {
         stockElement.classList.remove(
           "text-red-500",
@@ -532,32 +589,43 @@
               return response.json();
             })
             .then((data) => {
-              applyStockLevel(facebookStock, data.stock);
+              if (data.stock != null) {
+                applyStockLevel(facebookStock, data.stock);
+              }
             })
             .catch((error) => {
               console.error("load stock error (facebook):", error);
             });
         }
+        loadServicePrice("facebook", "price-facebook");
 
-        const icloudStock = document.getElementById("stock-icloud_facebook");
-        if (icloudStock) {
-          fetch("/v1/stock?service=" + encodeURIComponent("icloud_facebook"))
-            .then((response) => {
-              if (!response.ok) {
-                throw new Error("HTTP error! status: " + response.status);
-              }
-              return response.json();
-            })
-            .then((data) => {
-              if (data.status !== "success" || data.stock == null) {
-                throw new Error("Invalid stock response");
-              }
-              applyStockLevel(icloudStock, data.stock);
-            })
-            .catch((error) => {
-              console.error("load stock error (icloud_facebook):", error);
-            });
-        }
+        loadServiceStock(
+          "icloud_facebook",
+          "stock-icloud_facebook",
+          "price-icloud_facebook",
+        );
+        loadServiceStock(
+          "hotmailtrust",
+          "stock-hotmailtrust",
+          "price-hotmailtrust",
+        );
+        loadServiceStock(
+          "outlooktrust",
+          "stock-outlooktrust",
+          "price-outlooktrust",
+        );
+        loadServiceStock("novery_kh", "stock-novery", "price-novery-kh");
+        loadServiceStock("novery_us", "stock-novery-us", "price-novery-us");
+        loadServiceStock(
+          "hotmailnew",
+          "stock-hotmailnew",
+          "price-hotmailnew",
+        );
+        loadServiceStock(
+          "outlooknew",
+          "stock-outlooknew",
+          "price-outlooknew",
+        );
       }
 
       // Initialize stock display when page loads
@@ -1130,10 +1198,18 @@
               </div>
             </div>
             <div class="svc-foot">
-              <div class="svc-stock">
-                <div class="lbl">Available</div>
-                <div class="val">
-                  <span class="n" id="stock-facebook">~~</span>
+              <div class="svc-meta">
+                <div class="svc-stat">
+                  <div class="lbl">Price</div>
+                  <div class="val">
+                    <span class="u">$</span><span class="n" id="price-facebook">~~</span>
+                  </div>
+                </div>
+                <div class="svc-stat">
+                  <div class="lbl">Available</div>
+                  <div class="val">
+                    <span class="n" id="stock-facebook">~~</span>
+                  </div>
                 </div>
               </div>
               <button
@@ -1159,10 +1235,18 @@
               </div>
             </div>
             <div class="svc-foot">
-              <div class="svc-stock">
-                <div class="lbl">Available</div>
-                <div class="val">
-                  <span class="n" id="stock-icloud_facebook">~~</span>
+              <div class="svc-meta">
+                <div class="svc-stat">
+                  <div class="lbl">Price</div>
+                  <div class="val">
+                    <span class="u">$</span><span class="n" id="price-icloud_facebook">~~</span>
+                  </div>
+                </div>
+                <div class="svc-stat">
+                  <div class="lbl">Available</div>
+                  <div class="val">
+                    <span class="n" id="stock-icloud_facebook">~~</span>
+                  </div>
                 </div>
               </div>
               <button
@@ -1188,12 +1272,18 @@
               </div>
             </div>
             <div class="svc-foot">
-              <div class="svc-stock">
-                <div class="lbl">Available</div>
-                <div class="val">
-                  <span class="n" id="stock-hotmailtrust"
-                    >{{ .Data.hotmailtrust_stock }}</span
-                  >
+              <div class="svc-meta">
+                <div class="svc-stat">
+                  <div class="lbl">Price</div>
+                  <div class="val">
+                    <span class="u">$</span><span class="n" id="price-hotmailtrust">~~</span>
+                  </div>
+                </div>
+                <div class="svc-stat">
+                  <div class="lbl">Available</div>
+                  <div class="val">
+                    <span class="n" id="stock-hotmailtrust">{{ .Data.hotmailtrust_stock }}</span>
+                  </div>
                 </div>
               </div>
               <button
@@ -1219,12 +1309,18 @@
               </div>
             </div>
             <div class="svc-foot">
-              <div class="svc-stock">
-                <div class="lbl">Available</div>
-                <div class="val">
-                  <span class="n" id="stock-outlooktrust"
-                    >{{ .Data.outlooktrust_stock }}</span
-                  >
+              <div class="svc-meta">
+                <div class="svc-stat">
+                  <div class="lbl">Price</div>
+                  <div class="val">
+                    <span class="u">$</span><span class="n" id="price-outlooktrust">~~</span>
+                  </div>
+                </div>
+                <div class="svc-stat">
+                  <div class="lbl">Available</div>
+                  <div class="val">
+                    <span class="n" id="stock-outlooktrust">{{ .Data.outlooktrust_stock }}</span>
+                  </div>
                 </div>
               </div>
               <button
@@ -1250,10 +1346,18 @@
               </div>
             </div>
             <div class="svc-foot">
-              <div class="svc-stock">
-                <div class="lbl">Available</div>
-                <div class="val">
-                  <span class="n" id="stock-novery">~~</span>
+              <div class="svc-meta">
+                <div class="svc-stat">
+                  <div class="lbl">Price</div>
+                  <div class="val">
+                    <span class="u">$</span><span class="n" id="price-novery-kh">~~</span>
+                  </div>
+                </div>
+                <div class="svc-stat">
+                  <div class="lbl">Available</div>
+                  <div class="val">
+                    <span class="n" id="stock-novery">~~</span>
+                  </div>
                 </div>
               </div>
               <a
@@ -1280,10 +1384,18 @@
               </div>
             </div>
             <div class="svc-foot">
-              <div class="svc-stock">
-                <div class="lbl">Available</div>
-                <div class="val">
-                  <span class="n" id="stock-novery-us">~~</span>
+              <div class="svc-meta">
+                <div class="svc-stat">
+                  <div class="lbl">Price</div>
+                  <div class="val">
+                    <span class="u">$</span><span class="n" id="price-novery-us">~~</span>
+                  </div>
+                </div>
+                <div class="svc-stat">
+                  <div class="lbl">Available</div>
+                  <div class="val">
+                    <span class="n" id="stock-novery-us">~~</span>
+                  </div>
                 </div>
               </div>
               <a
@@ -1310,12 +1422,18 @@
               </div>
             </div>
             <div class="svc-foot">
-              <div class="svc-stock">
-                <div class="lbl">Available</div>
-                <div class="val">
-                  <span class="n" id="stock-hotmailnew"
-                    >{{ .Data.hotmailnew_stock }}</span
-                  >
+              <div class="svc-meta">
+                <div class="svc-stat">
+                  <div class="lbl">Price</div>
+                  <div class="val">
+                    <span class="u">$</span><span class="n" id="price-hotmailnew">~~</span>
+                  </div>
+                </div>
+                <div class="svc-stat">
+                  <div class="lbl">Available</div>
+                  <div class="val">
+                    <span class="n" id="stock-hotmailnew">{{ .Data.hotmailnew_stock }}</span>
+                  </div>
                 </div>
               </div>
               <button
@@ -1341,12 +1459,18 @@
               </div>
             </div>
             <div class="svc-foot">
-              <div class="svc-stock">
-                <div class="lbl">Available</div>
-                <div class="val">
-                  <span class="n" id="stock-outlooknew"
-                    >{{ .Data.outlooknew_stock }}</span
-                  >
+              <div class="svc-meta">
+                <div class="svc-stat">
+                  <div class="lbl">Price</div>
+                  <div class="val">
+                    <span class="u">$</span><span class="n" id="price-outlooknew">~~</span>
+                  </div>
+                </div>
+                <div class="svc-stat">
+                  <div class="lbl">Available</div>
+                  <div class="val">
+                    <span class="n" id="stock-outlooknew">{{ .Data.outlooknew_stock }}</span>
+                  </div>
                 </div>
               </div>
               <button

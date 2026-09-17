@@ -2284,12 +2284,20 @@ body.app-body::before {
   gap: 0.4rem;
   padding-top: 0.35rem;
 }
+.svc-meta {
+  display: flex;
+  width: 100%;
+  gap: 0.35rem;
+}
+.svc-stat,
 .svc-stock {
   display: flex;
+  flex: 1;
   flex-direction: column;
   align-items: center;
   line-height: 1;
 }
+.svc-stat .lbl,
 .svc-stock .lbl {
   font-size: 0.52rem;
   font-weight: 700;
@@ -2298,21 +2306,28 @@ body.app-body::before {
   color: var(--muted);
   margin-bottom: 0.12rem;
 }
+.svc-stat .val,
 .svc-stock .val {
   display: flex;
   align-items: baseline;
   gap: 0.2rem;
   font-family: "Space Grotesk", "Manrope", sans-serif;
 }
+.svc-stat .val .n,
 .svc-stock .val .n {
   font-size: 0.95rem;
   font-weight: 800;
   line-height: 1;
 }
+.svc-stat .val .u,
 .svc-stock .val .u {
   font-size: 0.6rem;
   font-weight: 700;
   color: var(--muted);
+}
+.svc-stat .val .u + .n,
+.svc-stock .val .u + .n {
+  color: var(--brand);
 }
 .svc-new {
   display: inline-flex;
@@ -2383,12 +2398,15 @@ a.svc-new:hover {
     padding-top: 0.7rem;
     border-top: 1px dashed var(--line);
   }
+  .svc-stat .lbl,
   .svc-stock .lbl {
     font-size: 0.6rem;
   }
+  .svc-stat .val .n,
   .svc-stock .val .n {
     font-size: 1.2rem;
   }
+  .svc-stat .val .u,
   .svc-stock .val .u {
     font-size: 0.66rem;
   }

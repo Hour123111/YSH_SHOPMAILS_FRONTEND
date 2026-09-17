@@ -410,8 +410,8 @@
             <p class="text-sm sm:text-base text-teal-50/85 max-w-lg mb-4">
               {{.Message}}
             </p>
+            {{if .User}}
             <div class="flex flex-wrap gap-2">
-              {{if .User}}
               <a href="/orders" class="btn-primary px-4 py-2.5 text-sm"
                 >Open Orders</a
               >
@@ -421,7 +421,9 @@
                 style="border-color: rgba(255, 255, 255, 0.25); color: #fff"
                 >Top up</a
               >
-              {{else}}
+            </div>
+            {{else}}
+            <div class="hero-auth-btns flex flex-wrap gap-2">
               <a href="/login" class="nav-login-btn">
                 <span class="nav-icon-wrap login" aria-hidden="true">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -443,8 +445,8 @@
                 </span>
                 Sign up
               </a>
-              {{end}}
             </div>
+            {{end}}
             <div class="hero-badges">
               <span class="hero-badge"
                 ><svg
@@ -507,7 +509,7 @@
               >Start buying</a
             >
             {{else}}
-            <div class="flex flex-wrap gap-2">
+            <div class="hero-auth-btns flex flex-wrap gap-2">
             <a href="/login" class="nav-login-btn">
               <span class="nav-icon-wrap login" aria-hidden="true">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

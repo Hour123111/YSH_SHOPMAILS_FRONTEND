@@ -615,6 +615,11 @@ body.app-body.is-guest.has-support-bar {
     min-height: 250px;
   }
 }
+@media (max-width: 767px) {
+  .hero-slider .hero-auth-btns {
+    display: none;
+  }
+}
 .hero-dots {
   position: absolute;
   left: 0;

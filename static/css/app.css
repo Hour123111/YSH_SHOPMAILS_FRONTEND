@@ -2776,3 +2776,112 @@ a.svc-new:hover {
     transform: translateX(3px);
   }
 }
+
+/* ===== API page — services sidebar ===== */
+.api-page-layout {
+  display: grid;
+  gap: 1rem;
+  align-items: start;
+}
+@media (min-width: 960px) {
+  .api-page-layout {
+    grid-template-columns: 240px minmax(0, 1fr);
+    gap: 1.25rem;
+  }
+}
+.api-services-sidebar {
+  padding: 1rem 1.1rem;
+  position: sticky;
+  top: 5.5rem;
+}
+.api-sidebar-title {
+  margin: 0 0 0.25rem;
+  font-family: "Space Grotesk", "Manrope", sans-serif;
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--ink);
+}
+.api-sidebar-hint {
+  margin: 0 0 1rem;
+  font-size: 0.75rem;
+  line-height: 1.45;
+  color: var(--muted);
+}
+.api-sidebar-group {
+  margin-bottom: 0.85rem;
+}
+.api-sidebar-group:last-child {
+  margin-bottom: 0;
+}
+.api-sidebar-label {
+  margin-bottom: 0.4rem;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.api-sidebar-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+.api-sidebar-list li {
+  padding: 0.55rem 0.6rem;
+  border-radius: 0.65rem;
+  border: 1px solid var(--line);
+  background: var(--panel-2);
+}
+.api-sidebar-name {
+  display: block;
+  margin-bottom: 0.35rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+.api-sidebar-slug {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+.api-sidebar-slug code {
+  flex: 1;
+  min-width: 0;
+  font-size: 0.72rem;
+  font-family: ui-monospace, monospace;
+  color: var(--brand);
+  word-break: break-all;
+}
+.api-sidebar-copy {
+  flex-shrink: 0;
+  border: none;
+  background: var(--brand);
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 800;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.4rem;
+  cursor: pointer;
+  transition: filter 0.15s ease;
+}
+.api-sidebar-copy:hover {
+  filter: brightness(1.08);
+}
+@media (max-width: 959px) {
+  .api-services-sidebar {
+    position: static;
+  }
+  .api-sidebar-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem;
+  }
+}
+@media (max-width: 520px) {
+  .api-sidebar-list {
+    grid-template-columns: 1fr;
+  }
+}

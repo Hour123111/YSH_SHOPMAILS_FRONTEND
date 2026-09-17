@@ -55,7 +55,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="/static/js/config.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/static/css/app.css?v=20250911" />
+  <link rel="stylesheet" href="/static/css/app.css?v=20250917" />
   <script defer src="/static/js/ui.js"></script>
   <style>
     .accordion-button svg {
@@ -115,8 +115,94 @@
   </div>
 </header>
 
-<main class="flex-grow max-w-4xl mx-auto w-full section-pad py-4 sm:py-6">
-  <div class="panel p-4 sm:p-6 md:p-8 rise-in">
+<main class="flex-grow max-w-6xl mx-auto w-full section-pad py-4 sm:py-6">
+  <div class="api-page-layout">
+    <aside class="api-services-sidebar panel rise-in" aria-label="Services">
+      <h2 class="api-sidebar-title">Services</h2>
+      <p class="api-sidebar-hint">Copy a service slug for your API request.</p>
+
+      <div class="api-sidebar-group">
+        <div class="api-sidebar-label">OTP · 15 min</div>
+        <ul class="api-sidebar-list">
+          <li>
+            <span class="api-sidebar-name">FB Gmail OTP</span>
+            <div class="api-sidebar-slug">
+              <code>facebook</code>
+              <button type="button" class="api-sidebar-copy" onclick="copyService('facebook')">Copy</button>
+            </div>
+          </li>
+          <li>
+            <span class="api-sidebar-name">FB iCloud OTP</span>
+            <div class="api-sidebar-slug">
+              <code>icloud_facebook</code>
+              <button type="button" class="api-sidebar-copy" onclick="copyService('icloud_facebook')">Copy</button>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <div class="api-sidebar-group">
+        <div class="api-sidebar-label">Trust · v2</div>
+        <ul class="api-sidebar-list">
+          <li>
+            <span class="api-sidebar-name">Hotmail Trust</span>
+            <div class="api-sidebar-slug">
+              <code>hotmailtrust</code>
+              <button type="button" class="api-sidebar-copy" onclick="copyService('hotmailtrust')">Copy</button>
+            </div>
+          </li>
+          <li>
+            <span class="api-sidebar-name">Outlook Trust</span>
+            <div class="api-sidebar-slug">
+              <code>outlooktrust</code>
+              <button type="button" class="api-sidebar-copy" onclick="copyService('outlooktrust')">Copy</button>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <div class="api-sidebar-group">
+        <div class="api-sidebar-label">Fresh mail · v2</div>
+        <ul class="api-sidebar-list">
+          <li>
+            <span class="api-sidebar-name">Hotmail New</span>
+            <div class="api-sidebar-slug">
+              <code>hotmailnew</code>
+              <button type="button" class="api-sidebar-copy" onclick="copyService('hotmailnew')">Copy</button>
+            </div>
+          </li>
+          <li>
+            <span class="api-sidebar-name">Outlook New</span>
+            <div class="api-sidebar-slug">
+              <code>outlooknew</code>
+              <button type="button" class="api-sidebar-copy" onclick="copyService('outlooknew')">Copy</button>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <div class="api-sidebar-group">
+        <div class="api-sidebar-label">Facebook accounts</div>
+        <ul class="api-sidebar-list">
+          <li>
+            <span class="api-sidebar-name">Novery KH</span>
+            <div class="api-sidebar-slug">
+              <code>novery_kh</code>
+              <button type="button" class="api-sidebar-copy" onclick="copyService('novery_kh')">Copy</button>
+            </div>
+          </li>
+          <li>
+            <span class="api-sidebar-name">Novery US</span>
+            <div class="api-sidebar-slug">
+              <code>novery_us</code>
+              <button type="button" class="api-sidebar-copy" onclick="copyService('novery_us')">Copy</button>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </aside>
+
+    <div class="api-page-content panel p-4 sm:p-6 md:p-8 rise-in">
     <div class="mb-8">
       <h1 class="font-display text-3xl font-bold gradient-text mb-2">
         API Documentation
@@ -247,7 +333,7 @@ print("Balance:", data)</pre
             <p class="font-medium text-slate-500 dark:text-slate-300 mb-2">Parameters:</p>
             <ul class="list-disc ml-5 mb-4 text-slate-600 dark:text-slate-400 text-sm">
               <li>
-                <span class="font-mono">service</span>: service name (e.g. facebook, outlooktrust, outlooknew, hotmailtrust, hotmailnew, novery_kh, novery_us)
+                <span class="font-mono">service</span>: service name (e.g. facebook, icloud_facebook, outlooktrust, outlooknew, hotmailtrust, hotmailnew, novery_kh, novery_us)
               </li>
             </ul>
             <p class="font-medium text-slate-500 dark:text-slate-300 mb-2">Example Request (Python):</p>
@@ -322,7 +408,7 @@ print(data)</pre
             <p class="font-medium text-slate-500 dark:text-slate-300 mb-2">Parameters:</p>
             <ul class="list-disc ml-5 mb-4 text-slate-600 dark:text-slate-400 text-sm">
               <li><span class="font-mono">key</span>: your API key</li>
-              <li><span class="font-mono">service</span>: service name: facebook</li>
+              <li><span class="font-mono">service</span>: <span class="font-mono">facebook</span> or <span class="font-mono">icloud_facebook</span></li>
             </ul>
             <p class="font-medium text-slate-500 dark:text-slate-300 mb-2">Example Request:</p>
             <div class="relative">
@@ -508,6 +594,7 @@ https://yshshopmails.com/v2/api/order.php?id=5677306547560614&key={{ .Token }}&s
         </div>
       </div>
     </div>
+    </div>
   </div>
 </main>
 
@@ -551,6 +638,11 @@ https://yshshopmails.com/v2/api/order.php?id=5677306547560614&key={{ .Token }}&s
   function copyToken() {
     navigator.clipboard.writeText("{{ .Token }}");
     showToast("API token copied to clipboard!");
+  }
+
+  function copyService(slug) {
+    navigator.clipboard.writeText(slug);
+    showToast("Service slug copied: " + slug);
   }
 
   function resetToken() {

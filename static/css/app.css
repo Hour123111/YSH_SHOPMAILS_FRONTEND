@@ -594,31 +594,28 @@ body.app-body.is-guest.has-support-bar {
   position: relative;
   overflow: hidden;
   border-radius: 1.1rem;
-  background: #0d3f3a;
+  background: transparent;
   color: #fff;
-  min-height: 220px;
 }
 .hero-track {
   display: flex;
+  align-items: stretch;
   transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
   will-change: transform;
 }
 .hero-slide {
   min-width: 100%;
-  padding: 1.35rem 1.25rem 3.2rem;
+  min-height: 100%;
+  padding: 1.35rem 1.25rem 2.75rem;
+  box-sizing: border-box;
 }
 @media (min-width: 640px) {
   .hero-slide {
-    padding: 1.75rem 1.75rem 3.4rem;
-  }
-  .hero-slider {
-    min-height: 250px;
+    padding: 1.75rem 1.75rem 2.85rem;
   }
 }
-@media (max-width: 767px) {
-  .hero-slider .hero-auth-btns {
-    display: none;
-  }
+.hero-slider .hero-auth-btns {
+  display: none;
 }
 .hero-dots {
   position: absolute;
@@ -1614,7 +1611,6 @@ body.app-body::before {
 /* ---- Richer hero ---- */
 .hero-slider {
   border-radius: 1.4rem;
-  min-height: 260px;
   box-shadow: 0 24px 60px -28px rgba(11, 110, 99, 0.6);
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
@@ -1668,11 +1664,6 @@ body.app-body::before {
 .hero-badge svg {
   width: 0.85rem;
   height: 0.85rem;
-}
-@media (min-width: 640px) {
-  .hero-slider {
-    min-height: 300px;
-  }
 }
 
 /* ---- Stats band ---- */

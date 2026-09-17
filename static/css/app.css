@@ -2286,16 +2286,50 @@ body.app-body::before {
 }
 .svc-meta {
   display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
   width: 100%;
+  align-items: center;
+  justify-content: space-between;
   gap: 0.35rem;
+}
+.svc-meta .svc-stat {
+  display: inline-flex;
+  flex: 1;
+  min-width: 0;
+  flex-direction: row;
+  align-items: baseline;
+  justify-content: flex-start;
+  gap: 0.2rem;
+  line-height: 1.1;
+}
+.svc-meta .svc-stat:last-child {
+  justify-content: flex-end;
 }
 .svc-stat,
 .svc-stock {
   display: flex;
-  flex: 1;
   flex-direction: column;
   align-items: center;
   line-height: 1;
+}
+.svc-meta .svc-stat .lbl,
+.svc-stock .lbl {
+  font-size: 0.52rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0;
+  white-space: nowrap;
+}
+.svc-meta .svc-stat .val,
+.svc-stat .val,
+.svc-stock .val {
+  display: flex;
+  align-items: baseline;
+  gap: 0.2rem;
+  font-family: "Space Grotesk", "Manrope", sans-serif;
 }
 .svc-stat .lbl,
 .svc-stock .lbl {
@@ -2313,9 +2347,10 @@ body.app-body::before {
   gap: 0.2rem;
   font-family: "Space Grotesk", "Manrope", sans-serif;
 }
+.svc-meta .svc-stat .val .n,
 .svc-stat .val .n,
 .svc-stock .val .n {
-  font-size: 0.95rem;
+  font-size: 0.82rem;
   font-weight: 800;
   line-height: 1;
   color: var(--ink);
@@ -2389,17 +2424,15 @@ a.svc-new:hover {
     padding-top: 0.7rem;
     border-top: 1px dashed var(--line);
   }
+  .svc-meta .svc-stat .lbl,
   .svc-stat .lbl,
   .svc-stock .lbl {
     font-size: 0.6rem;
   }
+  .svc-meta .svc-stat .val .n,
   .svc-stat .val .n,
   .svc-stock .val .n {
-    font-size: 1.2rem;
-  }
-  .svc-stat .val .u,
-  .svc-stock .val .u {
-    font-size: 0.66rem;
+    font-size: 1rem;
   }
   .svc-new {
     font-size: 0.8rem;

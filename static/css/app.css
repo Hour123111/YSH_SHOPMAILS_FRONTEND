@@ -2318,16 +2318,7 @@ body.app-body::before {
   font-size: 0.95rem;
   font-weight: 800;
   line-height: 1;
-}
-.svc-stat .val .u,
-.svc-stock .val .u {
-  font-size: 0.6rem;
-  font-weight: 700;
-  color: var(--muted);
-}
-.svc-stat .val .u + .n,
-.svc-stock .val .u + .n {
-  color: var(--brand);
+  color: var(--ink);
 }
 .svc-new {
   display: inline-flex;

@@ -287,9 +287,13 @@ body.app-body.auth-page {
   white-space: nowrap;
 }
 .nav-guest-cluster {
-  display: flex;
   align-items: center;
   gap: 0.45rem;
+}
+.nav-login-btn,
+.nav-signup-btn {
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 .nav-login-btn {
   display: inline-flex;
@@ -343,12 +347,35 @@ body.app-body.auth-page {
   text-decoration: none;
 }
 .nav-signup-btn--compact {
-  padding: 0.4rem 0.78rem 0.4rem 0.4rem;
+  padding: 0.4rem 0.78rem;
   font-size: 0.78rem;
 }
 .nav-signup-btn--compact .nav-icon-wrap.signup {
   width: 1.65rem;
   height: 1.65rem;
+}
+@media (max-width: 767px) {
+  .nav-auth-mobile-only .nav-icon-wrap {
+    display: none;
+  }
+  .nav-auth-mobile-only.nav-login-btn,
+  .nav-auth-mobile-only.nav-signup-btn {
+    padding: 0.38rem 0.7rem;
+    font-size: 0.74rem;
+  }
+  .header-actions {
+    gap: 0.35rem;
+    flex-shrink: 0;
+  }
+  .app-header-inner > a:first-child {
+    min-width: 0;
+    flex: 1;
+  }
+}
+@media (min-width: 768px) {
+  .nav-auth-mobile-only {
+    display: none !important;
+  }
 }
 @keyframes signupBtnShine {
   0%,

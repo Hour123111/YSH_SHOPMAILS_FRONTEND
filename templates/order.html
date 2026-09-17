@@ -610,16 +610,8 @@
           "stock-outlooktrust",
           "price-outlooktrust",
         );
-        loadServiceStock(
-          "hotmailnew",
-          "stock-hotmailnew",
-          "price-hotmailnew",
-        );
-        loadServiceStock(
-          "outlooknew",
-          "stock-outlooknew",
-          "price-outlooknew",
-        );
+        loadServiceStock("hotmailnew", "stock-hotmailnew", "price-hotmailnew");
+        loadServiceStock("outlooknew", "stock-outlooknew", "price-outlooknew");
       }
 
       // Initialize stock display when page loads
@@ -1233,7 +1225,7 @@
                 <div class="svc-stat">
                   <div class="lbl">Price</div>
                   <div class="val">
-                    <span class="n" id="price-icloud_facebook">$0.030</span>
+                    <span class="n" id="price-icloud_facebook">$0.025</span>
                   </div>
                 </div>
                 <div class="svc-stat">
@@ -1276,7 +1268,9 @@
                 <div class="svc-stat">
                   <div class="lbl">Stock</div>
                   <div class="val">
-                    <span class="n" id="stock-hotmailtrust">{{ .Data.hotmailtrust_stock }}</span>
+                    <span class="n" id="stock-hotmailtrust"
+                      >{{ .Data.hotmailtrust_stock }}</span
+                    >
                   </div>
                 </div>
               </div>
@@ -1313,7 +1307,9 @@
                 <div class="svc-stat">
                   <div class="lbl">Stock</div>
                   <div class="val">
-                    <span class="n" id="stock-outlooktrust">{{ .Data.outlooktrust_stock }}</span>
+                    <span class="n" id="stock-outlooktrust"
+                      >{{ .Data.outlooktrust_stock }}</span
+                    >
                   </div>
                 </div>
               </div>
@@ -1426,7 +1422,9 @@
                 <div class="svc-stat">
                   <div class="lbl">Stock</div>
                   <div class="val">
-                    <span class="n" id="stock-hotmailnew">{{ .Data.hotmailnew_stock }}</span>
+                    <span class="n" id="stock-hotmailnew"
+                      >{{ .Data.hotmailnew_stock }}</span
+                    >
                   </div>
                 </div>
               </div>
@@ -1463,7 +1461,9 @@
                 <div class="svc-stat">
                   <div class="lbl">Stock</div>
                   <div class="val">
-                    <span class="n" id="stock-outlooknew">{{ .Data.outlooknew_stock }}</span>
+                    <span class="n" id="stock-outlooknew"
+                      >{{ .Data.outlooknew_stock }}</span
+                    >
                   </div>
                 </div>
               </div>

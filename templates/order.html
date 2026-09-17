@@ -501,61 +501,63 @@
         }
       });
 
-      // Function to update stock display (example with random numbers)
+      function applyStockLevel(stockElement, stock) {
+        stockElement.classList.remove(
+          "text-red-500",
+          "text-yellow-500",
+          "text-green-500",
+          "font-bold",
+          "font-semibold",
+        );
+
+        if (stock < 20) {
+          stockElement.classList.add("text-red-500", "font-bold");
+        } else if (stock < 50) {
+          stockElement.classList.add("text-yellow-500", "font-semibold");
+        } else {
+          stockElement.classList.add("text-green-500", "font-semibold");
+        }
+
+        stockElement.textContent = stock;
+      }
+
       function updateStockDisplay() {
-        // In a real application, you would fetch this data from your API
-        const stockData = {
-          facebook: Math.floor(Math.random() * 100) + 50,
-          // 'hotmailtrust': Math.floor(Math.random() * 80) + 30,
-          // 'outlooktrust': Math.floor(Math.random() * 120) + 40,
-          // 'novery_kh': Math.floor(Math.random() * 60) + 20
-        };
+        const facebookStock = document.getElementById("stock-facebook");
+        if (facebookStock) {
+          fetch("https://facebook.yshshopmails.com/v1/api/stock")
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error("HTTP error! status: " + response.status);
+              }
+              return response.json();
+            })
+            .then((data) => {
+              applyStockLevel(facebookStock, data.stock);
+            })
+            .catch((error) => {
+              console.error("load stock error (facebook):", error);
+            });
+        }
 
-        Object.keys(stockData).forEach((service) => {
-          const stockElement = document.getElementById(`stock-${service}`);
-          if (stockElement) {
-            fetch("https://facebook.yshshopmails.com/v1/api/stock")
-              .then((response) => {
-                if (!response.ok) {
-                  throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json();
-              })
-              .then((data) => {
-                const stock = data.stock; // Lấy số (ví dụ: ID = 1)
-
-                // Add visual indicator based on stock level
-                if (stock < 20) {
-                  stockElement.classList.add("text-red-500", "font-bold");
-                  stockElement.classList.remove(
-                    "text-green-500",
-                    "text-yellow-500",
-                  );
-                } else if (stock < 50) {
-                  stockElement.classList.add(
-                    "text-yellow-500",
-                    "font-semibold",
-                  );
-                  stockElement.classList.remove(
-                    "text-green-500",
-                    "text-red-500",
-                  );
-                } else {
-                  stockElement.classList.add("text-green-500", "font-semibold");
-                  stockElement.classList.remove(
-                    "text-yellow-500",
-                    "text-red-500",
-                  );
-                }
-
-                stockElement.textContent = stock;
-                return stock;
-              })
-              .catch((error) => {
-                console.error("load stock error :", error);
-              });
-          }
-        });
+        const icloudStock = document.getElementById("stock-icloud_facebook");
+        if (icloudStock) {
+          fetch("/v1/stock?service=" + encodeURIComponent("icloud_facebook"))
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error("HTTP error! status: " + response.status);
+              }
+              return response.json();
+            })
+            .then((data) => {
+              if (data.status !== "success" || data.stock == null) {
+                throw new Error("Invalid stock response");
+              }
+              applyStockLevel(icloudStock, data.stock);
+            })
+            .catch((error) => {
+              console.error("load stock error (icloud_facebook):", error);
+            });
+        }
       }
 
       // Initialize stock display when page loads

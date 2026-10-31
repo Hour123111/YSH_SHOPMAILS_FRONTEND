@@ -314,19 +314,68 @@
         hotmailtrust: {
           name: "Hotmail Trust",
           desc: "Trusted Hotmail (Live 6-12 months)",
-          price: 0.015,
+          price: 0,
           logo: "#logo-hotmail",
           stockId: "stock-hotmailtrust",
+          priceId: "price-hotmailtrust",
         },
         outlooktrust: {
           name: "Outlook Trust",
           desc: "Trusted Outlook (Live 6-12 months)",
-          price: 0.015,
+          price: 0,
           logo: "#logo-outlook",
           stockId: "stock-outlooktrust",
+          priceId: "price-outlooktrust",
         },
       };
       let currentBuyService = null;
+
+      function parsePriceFromElement(el) {
+        if (!el) return null;
+        const text = el.textContent.trim();
+        if (!text || text === "~~") return null;
+        const n = parseFloat(text.replace(/[^0-9.]/g, ""));
+        return Number.isFinite(n) && n >= 0 ? n : null;
+      }
+
+      function rememberServicePrice(service, price) {
+        const n = Number(price);
+        if (!Number.isFinite(n) || n < 0) return;
+        if (BUY_INFO[service]) {
+          BUY_INFO[service].price = n;
+        }
+      }
+
+      function getBuyUnitPrice(service) {
+        const info = BUY_INFO[service];
+        if (!info) return 0;
+        // Trust bulk modal uses price from the one /v1/stock call on page load — no second request.
+        if (info.price > 0) return info.price;
+        const parsed = parsePriceFromElement(
+          document.getElementById(info.priceId || "price-" + service),
+        );
+        if (parsed != null) {
+          info.price = parsed;
+          return parsed;
+        }
+        return 0;
+      }
+
+      function fetchStockFromApi(service) {
+        return fetch("/v1/stock?service=" + encodeURIComponent(service)).then(
+          (response) => {
+            if (!response.ok) {
+              throw new Error("HTTP error! status: " + response.status);
+            }
+            return response.json();
+          },
+        ).then((data) => {
+          if (data.status !== "success") {
+            throw new Error("Invalid stock response");
+          }
+          return data;
+        });
+      }
 
       function openBuyModal(service) {
         const info = BUY_INFO[service];
@@ -336,25 +385,57 @@
         document.getElementById("buy-logo-use").setAttribute("href", info.logo);
         document.getElementById("buy-title").textContent = info.name;
         document.getElementById("buy-desc").textContent = info.desc;
-        const unitStr = "$" + info.price.toFixed(3);
-        document.getElementById("buy-unit").textContent = unitStr;
-        document.getElementById("buy-unit-2").textContent = unitStr;
 
-        const stockEl = document.getElementById(info.stockId);
-        const stock = stockEl
-          ? parseInt(stockEl.textContent.replace(/[^0-9]/g, ""), 10) || 0
-          : 0;
-        document.getElementById("buy-stock").textContent = stock;
+        function showBuyModalWithPrice(unitPrice) {
+          if (!unitPrice) {
+            showToast("Price not loaded yet, please wait and try again");
+            currentBuyService = null;
+            return;
+          }
+          const unitStr = "$" + unitPrice.toFixed(3);
+          document.getElementById("buy-unit").textContent = unitStr;
+          document.getElementById("buy-unit-2").textContent = unitStr;
 
-        const qtyInput = document.getElementById("buy-qty");
-        qtyInput.value = 1;
-        qtyInput.max = stock > 0 ? stock : "";
-        updateBuyTotal();
+          const stockEl = document.getElementById(info.stockId);
+          const stock = stockEl
+            ? parseInt(stockEl.textContent.replace(/[^0-9]/g, ""), 10) || 0
+            : 0;
+          document.getElementById("buy-stock").textContent = stock;
 
-        const modal = document.getElementById("buy-modal");
-        modal.classList.remove("hidden");
-        requestAnimationFrame(() => modal.classList.add("open"));
-        document.body.style.overflow = "hidden";
+          const qtyInput = document.getElementById("buy-qty");
+          qtyInput.value = 1;
+          qtyInput.max = stock > 0 ? stock : "";
+          updateBuyTotal();
+
+          const modal = document.getElementById("buy-modal");
+          modal.classList.remove("hidden");
+          requestAnimationFrame(() => modal.classList.add("open"));
+          document.body.style.overflow = "hidden";
+        }
+
+        let unitPrice = getBuyUnitPrice(service);
+        if (unitPrice) {
+          showBuyModalWithPrice(unitPrice);
+          return;
+        }
+
+        fetchStockFromApi(service)
+          .then((data) => {
+            const priceEl = document.getElementById(info.priceId);
+            if (data.price != null) {
+              rememberServicePrice(service, data.price);
+              if (priceEl) applyServicePrice(priceEl, data.price);
+            }
+            const stockEl = document.getElementById(info.stockId);
+            if (stockEl && data.stock != null) {
+              applyStockLevel(stockEl, data.stock);
+            }
+            showBuyModalWithPrice(getBuyUnitPrice(service));
+          })
+          .catch(() => {
+            showToast("Could not load price, please try again");
+            currentBuyService = null;
+          });
       }
 
       function closeBuyModal() {
@@ -410,6 +491,7 @@
       function updateBuyTotal() {
         const info = BUY_INFO[currentBuyService];
         if (!info) return;
+        const unitPrice = getBuyUnitPrice(currentBuyService);
         const qtyInput = document.getElementById("buy-qty");
         let qty = parseInt(String(qtyInput.value).split(/[.,]/)[0], 10) || 0;
         if (qty < 1) qty = 1;
@@ -417,7 +499,7 @@
         if (max && qty > max) qty = max;
         qtyInput.value = qty;
         document.getElementById("buy-total").textContent =
-          "$" + (qty * info.price).toFixed(3);
+          "$" + (qty * unitPrice).toFixed(3);
         document.getElementById("buy-qty-label").textContent = qty;
       }
 
@@ -551,6 +633,7 @@
             }
             if (priceElement && data.price != null) {
               applyServicePrice(priceElement, data.price);
+              rememberServicePrice(service, data.price);
             }
           })
           .catch((error) => {
